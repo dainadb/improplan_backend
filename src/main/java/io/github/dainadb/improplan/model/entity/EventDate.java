@@ -1,6 +1,7 @@
 package io.github.dainadb.improplan.model.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,38 +15,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 /**
- * Entidad que representa una Temática para los eventos.
+ * Entidad que representa una fecha específica en la que puede ocurrir un evento.
  */
 @Entity
-@Table(name = "themes")
+@Table(name = "event_dates")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Theme implements Serializable {
+public class EventDate implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Clave primaria de la temática.
+     * Identificador único de la fecha.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_theme")
-    private Integer id;
+    @Column(name = "id_date")
+    private Long id;
 
     /**
-     * Nombre de la temática.
+     * La fecha completa del evento.
+     * Se utiliza LocalDate para representar solo la fecha (año, mes, día).
      */
-    @Column(nullable = false, unique = true, length = 50)
-    private String name;
-
-    /**
-     * Descripción de la temática.
-     */
-    @Column(length = 255)
-    private String description;
+    @Column(name = "full_date", nullable = false)
+    private LocalDate fullDate;
 
 }
