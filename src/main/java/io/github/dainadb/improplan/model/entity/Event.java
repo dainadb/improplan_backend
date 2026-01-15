@@ -76,12 +76,16 @@ public class Event implements Serializable {
     @Column(precision = 10, scale = 2)
     private Double price;
 
+    @Column(name = "in_time", nullable = false)
+    private Boolean inTime; //Indica si el evento está vigente o no.
+
     /** 
-     * Estado del evento.
+     * Estado del evento, por defecto PENDING.  
      * */ 
+    @Builder.Default //Para que no ignore el valor por defecto al usar el builder de Lombok
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusType status;
+    private StatusType status = StatusType.PENDING;
     
     //Enumeración interna para los tipos de estado del evento.
     // Al estar dentro de la clase Event, se accede como Event.StatusType.

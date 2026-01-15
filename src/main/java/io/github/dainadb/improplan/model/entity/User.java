@@ -79,6 +79,14 @@ public class User implements Serializable, UserDetails {
     @Column(name = "registration_date")
     private LocalDate registrationDate;
 
+    /**
+     * Indica si el usuario está habilitado o no para acceder al sistema.
+     * Por defecto, un usuario nuevo está habilitado.
+     */
+    @Builder.Default //Para que no ignore el valor por defecto al usar el builder de Lombok
+    @Column(nullable = false)
+    private boolean enabled = true ;
+
 
     /**
      * Roles asignados al usuario para gestionar permisos.
