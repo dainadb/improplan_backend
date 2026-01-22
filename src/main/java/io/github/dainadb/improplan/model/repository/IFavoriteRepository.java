@@ -1,5 +1,6 @@
 package io.github.dainadb.improplan.model.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,13 @@ import jakarta.transaction.Transactional;
  * Permite realizar operaciones CRUD y consultas sobre la tabla de favoritos.
 */
 public interface IFavoriteRepository extends JpaRepository<Favorite, Long> {
+
+    /**
+     * Devuelve los favoritos del usuario por su ID.
+     * @param userId ID del usuario.
+     *  @return Lista de favoritos que ha seleccionado ese usuario
+     */
+    List<Favorite> findByUserId(Long userId);
 
     /**     
      * Busca un favorito por el ID del usuario y el ID del evento.

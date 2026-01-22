@@ -60,9 +60,13 @@ public class Event implements Serializable {
     @Column(length = 255)
     private String address;
 
-    private Double latitude;
+    @Builder.Default
+    @Column(precision = 10, scale = 8)
+    private Double latitude = 0.0; //Se establece un valor por defecto porque cuando el usuario (role user) crea el evento, no introduce latitud ni longitud.
 
-    private Double longitude;
+    @Builder.Default
+    @Column(precision = 11, scale = 8)
+    private Double longitude = 0.0; //Se establece un valor por defecto porque cuando el usuario (role user) crea el evento, no introduce latitud ni longitud.
 
     @Column(length = 255)
     private String image;
@@ -76,9 +80,12 @@ public class Event implements Serializable {
     @Column(precision = 10, scale = 2)
     private Double price;
 
+    @Builder.Default
     @Column(name = "in_time", nullable = false)
-    private Boolean inTime; //Indica si el evento está vigente o no.
-
+    private Boolean inTime = true; //Indica si el evento está vigente o no.
+    // Por defecto es true porque cuando se crea un evento, las fechas son futuras.
+    //Tiene un valor por defecto que lo modificará un método programado (scheduler).
+    
     /** 
      * Estado del evento, por defecto PENDING.  
      * */ 

@@ -19,7 +19,7 @@ public class ApiResponse<T> {
     private String message;
 
     private T data; // Se usa la T por convención de tipos genéricos, indicamos que no tiene un tipo fijo
-    //De esta manera se puede usar ApiResponser para devolver cualquier tipo de dato:ApiResponse<User>, ApiResponse<List<Product>>, ApiResponse<Map<String, String>>
+    //De esta manera se puede usar ApiResponse para devolver cualquier tipo de dato:ApiResponse<User>, ApiResponse<List<Product>>, ApiResponse<Map<String, String>>
 
 
 

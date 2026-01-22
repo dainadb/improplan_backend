@@ -1,5 +1,19 @@
 package io.github.dainadb.improplan.model.service.theme.dto;
 
-public class ThemeResponseDto {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+/**
+ * DTO de respuesta para la entidad Theme.
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ThemeResponseDto {
+    private Integer id;
+    private String name;
+    private String description;
 }

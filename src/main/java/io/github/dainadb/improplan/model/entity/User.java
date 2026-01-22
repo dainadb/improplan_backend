@@ -1,7 +1,7 @@
 package io.github.dainadb.improplan.model.entity;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -76,8 +76,8 @@ public class User implements Serializable, UserDetails {
     /**
      * Fecha en la que el usuario se registró.
      */
-    @Column(name = "registration_date")
-    private LocalDate registrationDate;
+    @Column(name = "registration_date", updatable = false) // updatable = false para que no se modifique después de crearse.
+    private LocalDateTime registrationDate;
 
     /**
      * Indica si el usuario está habilitado o no para acceder al sistema.

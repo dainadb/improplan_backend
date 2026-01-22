@@ -48,7 +48,7 @@ public class Favorite implements Serializable {
     /**
      * Fecha y hora en que el evento fue marcado como favorito.
      */
-    @Column(name = "favorite_date", nullable = false)
+    @Column(name = "favorite_date", updatable = false) // updatable = false para que no se modifique después de crearse.
     private LocalDateTime favoriteDate;
 
     /**

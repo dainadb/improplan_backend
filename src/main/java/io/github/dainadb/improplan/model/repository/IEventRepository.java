@@ -33,19 +33,11 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     List<Event> findByStatus(StatusType status);
 
     /**
-     * Busca eventos según si son gratuitos o no.
-     * @param isFree Indica si el evento es gratuito (true) o de pago (false).
-     * @return Lista de eventos que coinciden con el criterio de gratuidad.
+     * Busca eventos según si están vigentes o no.
+     * @param inTime Indica si el evento está vigente (true) o no (false).
+     * @return Lista de eventos que coinciden con el criterio dado.
      */
-    List<Event> findByIsFree(Boolean isFree);
-
-    /**
-     * Busca eventos cuyo precio está entre un rango dado.
-     * @param minPrice Precio mínimo.
-     * @param maxPrice Precio máximo.
-     * @return Lista de eventos que tienen un precio dentro del rango especificado.
-     */
-    List<Event> findByPriceBetween(Double minPrice, Double maxPrice);
+    List<Event> findByInTime(Boolean inTime);
 
     /**
      * Busca eventos según si están vigentes o no y su estado.
@@ -55,7 +47,21 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
      */
     List<Event> findByInTimeAndStatus(Boolean inTime, StatusType status);
    
+    /**
+     * Busca eventos según si son gratuitos o no.
+     * @param isFree Indica si el evento es gratuito (true) o de pago (false).
+     * @return Lista de eventos que coinciden con el criterio de gratuidad.
+     */
+    List<Event> findByIsFree(Boolean isFree);
+
    
+   /**
+    * Busca eventos cuyo precio sea igual o inferior al dado
+    * @param maxPrice Precio máximo
+    * @return Lista de eventos que tienen un precio igual o inferior al especificado.
+    */
+    List<Event> findByPriceLessThanEqual (Double maxPrice);
+
     /**
      * Busca eventos por el nombre del municipio.
      * @param name Nombre del municipio.
@@ -131,11 +137,12 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     //Además de los elementos de la página, el objeto Page también contiene información sobre el total de elementos, total de páginas, número de página actual, etc.
    
     //Por parámetros se pasa un objeto Pageable que especifica el número de página, tamaño de página y criterios de ordenación.
-    Page<Event> findAll (Pageable pageable);
+    //Page<Event> findAll (Pageable pageable); //No sería necesario definir este método, ya que JpaRepository ya lo proporciona.
 
     //En esta opción además de pasar por parámetro el objeto Pageable, se pasa el estado para filtrar los eventos por su estado.
     Page<Event> findByStatus (Pageable pageable, StatusType status);
 
+    //En esta opción además de pasar por parámetro el objeto Pageable, se pasa el estado para filtrar los eventos por su estado y si están vigentes
     Page<Event> findByInTimeAndStatus(Pageable pageable, Boolean inTime, StatusType status);
 
 
@@ -155,20 +162,23 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     // En su lugar, la base de datos realiza el filtrado y solo devuelve los resultados que coinciden con los criterios especificados.
     // Esto mejora significativamente el rendimiento, especialmente cuando se trabaja con grandes conjuntos de datos.
 
-     @Query("""
+    //En esta consulta se pueden ver filtros fijos, ejemplo: e.status = 'PUBLISHED' (por estado publicado)o 
+    // opcionales, ejemplo: (:themeName IS NULL OR e.theme.name = :themeName) --> aquí se indica que si el parámetro :themeName es null, automáticamente la condición será true y por lo tanto no se filtrará por temática (eso es así porque el usuario ha decidido no filtrar por temática)
+    //En cambio, por como se quiere diseñar el front, tanto: comunidad, provincia como fecha, serán filtros fijos, ya que el usuario siempre tendrá que indicarlos antes de que se le muestren los eventos publicados.
+    @Query("""
         SELECT e FROM Event e
           JOIN e.municipality m
           JOIN m.province p
           JOIN p.community c
           JOIN e.dates d
-        WHERE e.status = 'PUBLISHED'
-          AND c.name = :communityName
+        WHERE e.status = 'PUBLISHED' 
+          AND c.name = :communityName 
           AND p.name = :provinceName
           AND d.fullDate = :eventDate
           AND (:themeName IS NULL OR e.theme.name = :themeName)
           AND (:municipalityName IS NULL OR m.name = :municipalityName)
           AND (:maxPrice IS NULL OR e.price <= :maxPrice)
-        """)
+        """) 
     Page<Event> searchPublishedEvents(
             @Param("communityName") String communityName,
             @Param("provinceName") String provinceName,
