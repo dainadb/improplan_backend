@@ -10,23 +10,20 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.github.dainadb.improplan.model.entity.Event;
-import io.github.dainadb.improplan.model.entity.EventDate;
-import io.github.dainadb.improplan.model.entity.Favorite;
-import io.github.dainadb.improplan.model.entity.Municipality;
-import io.github.dainadb.improplan.model.entity.Province;
-import io.github.dainadb.improplan.model.entity.Role;
-import io.github.dainadb.improplan.model.entity.User;
-import io.github.dainadb.improplan.model.service.event.dto.EventRequestDto;
-import io.github.dainadb.improplan.model.service.event.dto.EventResponseDto;
-import io.github.dainadb.improplan.model.service.favorite.dto.FavoriteRequestDto;
-import io.github.dainadb.improplan.model.service.favorite.dto.FavoriteResponseDto;
-import io.github.dainadb.improplan.model.service.municipality.dto.MunicipalityRequestDto;
-import io.github.dainadb.improplan.model.service.municipality.dto.MunicipalityResponseDto;
-import io.github.dainadb.improplan.model.service.province.dto.ProvinceRequestDto;
-import io.github.dainadb.improplan.model.service.province.dto.ProvinceResponseDto;
-import io.github.dainadb.improplan.model.service.user.dto.UserRequestDto;
-import io.github.dainadb.improplan.model.service.user.dto.UserResponseDto;
+import io.github.dainadb.improplan.domain.event.dto.EventRequestDto;
+import io.github.dainadb.improplan.domain.event.dto.EventResponseDto;
+import io.github.dainadb.improplan.domain.event.entity.Event;
+import io.github.dainadb.improplan.domain.eventdate.entity.EventDate;
+import io.github.dainadb.improplan.domain.favorite.dto.FavoriteResponseDto;
+import io.github.dainadb.improplan.domain.favorite.entity.Favorite;
+import io.github.dainadb.improplan.domain.municipality.dto.MunicipalityResponseDto;
+import io.github.dainadb.improplan.domain.municipality.entity.Municipality;
+import io.github.dainadb.improplan.domain.province.dto.ProvinceResponseDto;
+import io.github.dainadb.improplan.domain.province.entity.Province;
+import io.github.dainadb.improplan.domain.role.entity.Role;
+import io.github.dainadb.improplan.domain.user.dto.UserRequestDto;
+import io.github.dainadb.improplan.domain.user.dto.UserResponseDto;
+import io.github.dainadb.improplan.domain.user.entity.User;
 
 /**
  * Configuración global de ModelMapper para personalizar el mapeo entre
@@ -52,6 +49,7 @@ public class ModelMapperConfig {
                        map().setAutonomousCommunityName(source.getAutonomousCommunity().getName());
                    }
                });
+    
     
         /**
          * Mapeo personalizado de Municipality a MunicipalityResponseDto
@@ -139,6 +137,8 @@ public class ModelMapperConfig {
         //MAPEOS INVERSOS PERSONALIZADOS (para create y update):
         /**
          * Mapeo personalizado de EventRequestDto a Event
+         * Se ignoran los campos que requieren lógica de negocio específica en el servicio,
+         * como la asignación de entidades relacionadas.
          */
         modelMapper.typeMap(EventRequestDto.class, Event.class)
                 .addMappings(new PropertyMap<EventRequestDto, Event>() {
@@ -151,49 +151,25 @@ public class ModelMapperConfig {
                         skip(destination.getDates());
                     }
         });
-        /**
-         * Mapeo personalizado de FavoriteRequestDto a Favorite
+        
+
+         /**
+         * Mapeo personalizado de UserRequestDto a User.
+         * Se ignoran los campos que requieren lógica de negocio específica en el servicio,
+         * como la codificación de la contraseña y la asignación de roles.
          */
-
-        modelMapper.typeMap(FavoriteRequestDto.class, Favorite.class)
-                .addMappings(new PropertyMap<FavoriteRequestDto, Favorite>() {
-                    @Override
-                    protected void configure() {
-                        skip(destination.getUser());
-                        skip(destination.getEvent());
-                    }
-        });
-
-        /**
-         * Mapeo personalizado de MunicipalityRequestDto a Municipality
-         */
-
-        modelMapper.typeMap(MunicipalityRequestDto.class, Municipality.class)
-                .addMappings(new PropertyMap<MunicipalityRequestDto, Municipality>() {
-                    @Override
-                    protected void configure() {
-                        skip(destination.getProvince());
-                    }
-        });
-
-        /**
-         * Mapeo personalizado de ProvinceRequestDto a Province
-         */
-        modelMapper.typeMap(ProvinceRequestDto.class, Province.class)
-                .addMappings(new PropertyMap<ProvinceRequestDto, Province>() {
-                    @Override
-                    protected void configure() {
-                        skip(destination.getAutonomousCommunity());
-                    }
-        });
-       
         modelMapper.typeMap(UserRequestDto.class, User.class)
                 .addMappings(new PropertyMap<UserRequestDto, User>() {
                     @Override
                     protected void configure() {
                         skip(destination.getRoles());
+                        skip(destination.getPassword());
                     }
         });
+       
+    
+        //No se incluyen mapeos personalizados para Province, Municipality,etc inversos porque no se crean/actualizan desde DTOs en la aplicación.
+       
        
         return modelMapper;
     }
