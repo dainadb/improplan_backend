@@ -1,7 +1,5 @@
 package io.github.dainadb.improplan.domain.autonomouscommunity.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -46,9 +44,11 @@ public class AutonomousCommunityServiceImpl extends GenericCrudDtoServiceImpl<Au
        * {@inheritDoc}
        */
     @Override
-    public Optional<AutCommunityResponseDto> findByName(String name) {
-        Optional<AutonomousCommunity> autCommunityOpt = autCommunityRepository.findByNameIgnoreCase(name);
-        return autCommunityOpt.map(this::convertToResponseDto); // Reutiliza el conversor heredado
+    public AutCommunityResponseDto findByName(String name) {
+        AutonomousCommunity autCommunityOpt = autCommunityRepository.findByNameIgnoreCase(name)
+                .orElseThrow(() -> new RuntimeException("Comunidad autónoma no encontrada con el nombre: " + name));
+
+        return convertToResponseDto(autCommunityOpt); // Reutiliza el conversor heredado
     }
 
 

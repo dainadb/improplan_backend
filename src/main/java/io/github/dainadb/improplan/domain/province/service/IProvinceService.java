@@ -1,7 +1,6 @@
 package io.github.dainadb.improplan.domain.province.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import io.github.dainadb.improplan.domain.generic.service.IGenericCrudDtoService;
 import io.github.dainadb.improplan.domain.province.dto.ProvinceRequestDto;
@@ -26,7 +25,8 @@ public interface IProvinceService extends IGenericCrudDtoService<Province, Provi
     /**
      * Busca una provincia por su nombre.
      * @param name Nombre de la provincia.
-     * @return Provincia que coincide con el nombre.
+     * @return El DTO de la provincia encontrada.
+     * @throws RuntimeException si la provincia no existe.
      */
-    Optional<ProvinceResponseDto> findByName(String name);
+    ProvinceResponseDto findByName(String name);
 }

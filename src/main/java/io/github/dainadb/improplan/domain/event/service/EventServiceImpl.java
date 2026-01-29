@@ -67,7 +67,7 @@ public class EventServiceImpl  implements IEventService {
                 .orElseThrow(() -> new NotFoundException("Usuario creador del evento no encontrado con email: " + userEmail));
         Municipality municipality = municipalityRepository.findByName(dto.getMunicipalityName())
                 .orElseThrow(() -> new NotFoundException("Municipio no encontrado: " + dto.getMunicipalityName()));
-        Theme theme = themeRepository.findByName(dto.getThemeName())
+        Theme theme = themeRepository.findByNameIgnoreCase(dto.getThemeName())
                 .orElseThrow(() -> new NotFoundException("Temática no encontrada: " + dto.getThemeName()));
         
         //Se buscan o crean las fechas que trae el RequestDto
@@ -104,7 +104,7 @@ public class EventServiceImpl  implements IEventService {
 
         Municipality municipality = municipalityRepository.findByName(dto.getMunicipalityName())
                 .orElseThrow(() -> new NotFoundException("Municipio no encontrado: " + dto.getMunicipalityName()));
-        Theme theme = themeRepository.findByName(dto.getThemeName())
+        Theme theme = themeRepository.findByNameIgnoreCase(dto.getThemeName())
                 .orElseThrow(() -> new NotFoundException("Temática no encontrada: " + dto.getThemeName()));
 
         Set<EventDate> eventDates = eventDateService.findOrCreateDates(dto.getEventDates());

@@ -5,7 +5,6 @@ package io.github.dainadb.improplan.domain.auth.service;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,9 @@ import org.springframework.stereotype.Service;
 import io.github.dainadb.improplan.common.utils.Validator;
 import io.github.dainadb.improplan.domain.auth.dto.LoginRequesttDto;
 import io.github.dainadb.improplan.domain.auth.dto.LoginResponseDto;
+import io.github.dainadb.improplan.domain.auth.dto.RegisterUserDto;
 import io.github.dainadb.improplan.domain.role.entity.Role;
 import io.github.dainadb.improplan.domain.role.repository.IRoleRepository;
-import io.github.dainadb.improplan.domain.user.dto.UserRequestDto;
 import io.github.dainadb.improplan.domain.user.dto.UserResponseDto;
 import io.github.dainadb.improplan.domain.user.entity.User;
 import io.github.dainadb.improplan.domain.user.repository.IUserRepository;
@@ -65,17 +64,26 @@ public class AuthServiceImpl implements IAuthService {
      */
     @Override
     @Transactional
-    public UserResponseDto registerUser(UserRequestDto userRequestDto) {
+    public UserResponseDto registerUser(RegisterUserDto registerDto) {
         
-        validateRegistration(userRequestDto);
+        validateRegistration(registerDto);
 
-        User newUser = modelMapper.map(userRequestDto, User.class);
+        User newUser = modelMapper.map(registerDto, User.class);
         //Aplicación manual de campos específicos que no se mapean directamente
-        newUser.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        newUser.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         newUser.setRegistrationDate(LocalDateTime.now());
         newUser.setEnabled(true); // Por defecto, habilitado
 
-        Set<Role> roles = resolveUserRoles(userRequestDto);
+        //Cuando se registre un usuario, se le asignará el rol "ROLE_USER" por defecto.
+        //Se usa RegisterUserDto porque no se quiere que el cliente pueda asignar roles al registrarse.
+
+        //Se busca el rol "ROLE_USER" 
+        Set<Role> roles = Collections.singleton( //con singleton se indica que es un conjunto con un solo elemento
+                roleRepository.findByName(Role.RoleType.ROLE_USER)
+                        .orElseThrow(() -> new NotFoundException("Rol por defecto 'ROLE_USER' no encontrado en la base de datos."))
+        );
+       
+        
         newUser.setRoles(roles);
 
         User savedUser = userRepository.save(newUser);
@@ -100,7 +108,7 @@ public class AuthServiceImpl implements IAuthService {
      * Valida los datos de entrada para un nuevo registro de usuario.
      * @param dto DTO de registro
      */
-    private void validateRegistration(UserRequestDto dto) {
+    private void validateRegistration(RegisterUserDto dto) {
         if (!Validator.isValidEmail(dto.getEmail())) {
             throw new BadRequestException("El email no tiene un formato válido: " + dto.getEmail());
         }
@@ -123,31 +131,7 @@ public class AuthServiceImpl implements IAuthService {
         }
     }
 
-    /**
-     * Resuelve y obtiene las entidades Role a partir de los nombres de roles del DTO.
-     * Asigna el rol 'ROLE_USER' por defecto si no se especifica ninguno.
-     * @param dto DTO de registro de usuario
-     * @return Un conjunto de entidades Role
-     */
-    private Set<Role> resolveUserRoles(UserRequestDto dto) {
-        if (dto.getRoles() == null || dto.getRoles().isEmpty()) {
-            Role defaultRole = roleRepository.findByName(Role.RoleType.ROLE_USER)
-                    .orElseThrow(() -> new NotFoundException("Rol por defecto 'ROLE_USER' no encontrado en la base de datos."));
-            return Collections.singleton(defaultRole);
-        }
-
-        return dto.getRoles().stream()
-                .map(roleName -> {
-                    try {
-                        Role.RoleType roleType = Role.RoleType.valueOf(roleName.toUpperCase());
-                        return roleRepository.findByName(roleType)
-                                .orElseThrow(() -> new NotFoundException("Rol no encontrado: " + roleName));
-                    } catch (IllegalArgumentException e) {
-                        throw new BadRequestException("Nombre de rol inválido: " + roleName);
-                    }
-                })
-                .collect(Collectors.toSet());
-    }
+   
 }
 
 

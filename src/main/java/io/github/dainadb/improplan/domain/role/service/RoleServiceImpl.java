@@ -1,8 +1,6 @@
 package io.github.dainadb.improplan.domain.role.service;
 
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -55,7 +53,7 @@ public class RoleServiceImpl
      * {@inheritDoc}
      */
     @Override
-    public Optional<RoleResponseDto> findByName(String name) {
+    public RoleResponseDto findByName(String name) {
        
         if (name == null || name.trim().isEmpty()) {
             throw new BadRequestException("El nombre del rol no puede estar vacío.");
@@ -67,15 +65,15 @@ public class RoleServiceImpl
             //Se intenta convertir el nombre del rol a RoleType (enum)
             roleType = Role.RoleType.valueOf(name.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            // Si la conversión falla porque el rol no existe. Devolvemos un Optional vacío.
-            // No lanzamos una excepción porque es un caso de "no encontrado", no un error del sistema.
-            return Optional.empty();
+            // Si la conversión falla porque el rol no existe dentro del enum, se lanza una excepción
+            throw new BadRequestException("El nombre del rol proporcionado no es válido: " + name);
         }
 
-        Optional<Role> roleOpt = roleRepository.findByName(roleType);
+         Role role = roleRepository.findByName(roleType)
+        .orElseThrow(() -> new BadRequestException("No se encontró ningún rol con el nombre: " + name));
     
 
         // Reutiliza el método convertToResponseDto heredado de la clase genérica.
-        return roleOpt.map(this::convertToResponseDto);
+        return convertToResponseDto(role);
     }
 }

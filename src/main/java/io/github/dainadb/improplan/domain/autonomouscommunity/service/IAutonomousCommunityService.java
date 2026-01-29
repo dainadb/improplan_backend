@@ -1,6 +1,5 @@
 package io.github.dainadb.improplan.domain.autonomouscommunity.service;
 
-import java.util.Optional;
 
 import io.github.dainadb.improplan.domain.autonomouscommunity.dto.AutCommunityRequestDto;
 import io.github.dainadb.improplan.domain.autonomouscommunity.dto.AutCommunityResponseDto;
@@ -13,7 +12,8 @@ public interface IAutonomousCommunityService extends IGenericCrudDtoService<Auto
     /**
      * Busca una comunidad autónoma por su nombre.
      * @param name El nombre de la comunidad autónoma a buscar.
-     * @return Un Optional que contiene la comunidad autónoma si se encuentra, o vacío si no existe.
+     * @return DTO de la comunidad autónoma encontrada.
+     * @throws RuntimeException si la comunidad autónoma no existe.
      */
-    Optional<AutCommunityResponseDto> findByName(String name);
+    AutCommunityResponseDto findByName(String name);
 }

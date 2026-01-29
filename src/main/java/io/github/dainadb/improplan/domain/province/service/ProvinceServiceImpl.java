@@ -1,7 +1,6 @@
 package io.github.dainadb.improplan.domain.province.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -61,8 +60,9 @@ public class ProvinceServiceImpl
     }
 
     @Override
-    public Optional<ProvinceResponseDto> findByName(String name) {
-        Optional<Province> provinceOpt = provinceRepository.findByNameIgnoreCase(name);
-        return provinceOpt.map(this::convertToResponseDto);
+    public ProvinceResponseDto findByName(String name) {
+        Province province = provinceRepository.findByNameIgnoreCase(name)
+                .orElseThrow(() -> new RuntimeException("Provincia no encontrada con el nombre: " + name));
+        return convertToResponseDto(province);
     }
 }

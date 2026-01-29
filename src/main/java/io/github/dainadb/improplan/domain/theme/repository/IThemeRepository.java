@@ -17,5 +17,5 @@ public interface IThemeRepository extends JpaRepository<Theme, Integer> {
      * @param name Nombre del tema.
      * @return un {@link Optional} que contiene la categoría si existe, o vacío en caso contrario
      */
-    Optional<Theme> findByName(String name);
+    Optional<Theme> findByNameIgnoreCase(String name);
 }
