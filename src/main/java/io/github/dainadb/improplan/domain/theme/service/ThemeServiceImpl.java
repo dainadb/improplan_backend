@@ -1,7 +1,5 @@
 package io.github.dainadb.improplan.domain.theme.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -11,6 +9,7 @@ import io.github.dainadb.improplan.domain.theme.dto.ThemeRequestDto;
 import io.github.dainadb.improplan.domain.theme.dto.ThemeResponseDto;
 import io.github.dainadb.improplan.domain.theme.entity.Theme;
 import io.github.dainadb.improplan.domain.theme.repository.IThemeRepository;
+import io.github.dainadb.improplan.exception.NotFoundException;
 
 /**
  * Implementación del servicio para la gestión de Temáticas (Themes).
@@ -52,11 +51,11 @@ public class ThemeServiceImpl
      * {@inheritDoc}
      */
     @Override
-    public Optional<ThemeResponseDto> findByName(String name) {
-        Optional<Theme> themeOpt = themeRepository.findByName(name);
+    public ThemeResponseDto findByName(String name) {
+        Theme theme = themeRepository.findByNameIgnoreCase(name).orElseThrow(() -> new NotFoundException("No se encontró ninguna temática con el nombre: " + name));
         
         // Reutiliza el método heredado convertToResponseDto para el mapeo
-        return themeOpt.map(this::convertToResponseDto);
+        return convertToResponseDto(theme);
     }
 
 }

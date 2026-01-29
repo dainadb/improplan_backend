@@ -1,6 +1,5 @@
 package io.github.dainadb.improplan.domain.role.service;
 
-import java.util.Optional;
 
 import io.github.dainadb.improplan.domain.generic.service.IGenericCrudDtoService;
 import io.github.dainadb.improplan.domain.role.dto.RoleRequestDto;
@@ -18,8 +17,8 @@ public interface IRoleService extends IGenericCrudDtoService<Role, RoleRequestDt
      * Busca un rol por su nombre (tipo de rol).
      *
      * @param name El nombre del rol a buscar (ej. "ROLE_ADMIN").
-     * @return un {@link Optional} que contiene el DTO del rol si se encuentra,
-     *         o un Optional vacío si no existe.
+     * @return el DTO del rol si se encuentra.
+     * @throws RuntimeException si el rol no existe.
      */
-    Optional<RoleResponseDto> findByName(String name);
+    RoleResponseDto findByName(String name);
 }

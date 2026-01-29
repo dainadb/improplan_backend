@@ -2,7 +2,7 @@ package io.github.dainadb.improplan.domain.auth.service;
 
 import io.github.dainadb.improplan.domain.auth.dto.LoginRequesttDto;
 import io.github.dainadb.improplan.domain.auth.dto.LoginResponseDto;
-import io.github.dainadb.improplan.domain.user.dto.UserRequestDto;
+import io.github.dainadb.improplan.domain.auth.dto.RegisterUserDto;
 import io.github.dainadb.improplan.domain.user.dto.UserResponseDto;
 
 
@@ -19,7 +19,7 @@ public interface IAuthService {
    * @param dto contiene los datos del nuevo usuario.
    * @return respuesta con los datos del usuario registrado.
    */
-  UserResponseDto registerUser(UserRequestDto dto);
+  UserResponseDto registerUser(RegisterUserDto dto);
 
   /**
    * Obtiene los detalles del usuario actual (que ha iniciado sesión) basado en su email.
