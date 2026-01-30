@@ -109,7 +109,7 @@ public class User implements Serializable, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name())) //Con role.getName() accedemos al atributo name que es de tipo RoleType y luego con el método name() de la clase enum obtenemos su representación en String.
+                .map(role -> new SimpleGrantedAuthority(role.getName().name())) //Con role.getName() accedemos al atributo name que es de tipo RoleType (enum) y luego con el método name() de la clase enum obtenemos su representación en String.
                 .toList(); //Se tranforma el objeto role a SimpleGrantedAuthority que es lo que Spring Security usa para gestionar los permisos.
     }
 
