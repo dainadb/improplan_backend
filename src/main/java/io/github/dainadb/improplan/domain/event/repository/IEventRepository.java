@@ -1,6 +1,7 @@
 package io.github.dainadb.improplan.domain.event.repository;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -42,11 +43,32 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     /**
      * Busca eventos según si están vigentes o no y su estado.
      * @param inTime Indica si el evento está vigente (true) o no (false).
-     * @param status Estado del evento.
+     * @param statusType Estado del evento.
      * @return Lista de eventos que coinciden con los criterios dados.
      */
-    List<Event> findByInTimeAndStatus(Boolean inTime, StatusType status);
+    List<Event> findByInTimeAndStatus(Boolean inTime, StatusType statusType);
    
+    /**
+     * Busca eventos por su estado de tiempo (inTime) y por una lista de estados posibles.
+     * @param inTime false para eventos fuera de tiempo, true para eventos en tiempo.
+     * @param statuses Colección de estados por los que filtrar (ej. PUBLISHED, PENDING).
+     * @return Lista de eventos que cumplen las condiciones.
+     */
+    List<Event> findByInTimeAndStatusIn(boolean inTime, Collection<StatusType> statuses);
+
+    /**
+     * Cuenta cuántos eventos hay en un estado específico.
+     * @param status Estado del evento.
+     * @return Número de eventos en el estado dado.
+     */
+    long countByStatus(StatusType status);
+
+    /**
+     * Cuenta cuántos eventos hay según su estado de tiempo (inTime).
+     * @param inTime true para eventos vigentes, false para eventos pasados.
+     * @return Número de eventos que coinciden con el criterio dado.
+     */
+    long countByInTime(Boolean inTime);
     /**
      * Busca eventos según si son gratuitos o no.
      * @param isFree Indica si el evento es gratuito (true) o de pago (false).
@@ -78,14 +100,6 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
 
 
     /**
-     * Busca eventos por el nombre de la comunidad autónoma.
-     * @param name Nombre de la comunidad autónoma.
-     * @return Lista de eventos que pertenecen a la comunidad autónoma con el nombre dado.
-     */
-
-    List<Event> findByAutonomousCommunityNameIgnoreCase (String name);
-
-    /**
      * Busca eventos por el nombre de su temática.
      * @param name Nombre de la temática.
      * @return Lista de eventos que pertenecen a la temática con el nombre dado.
@@ -110,17 +124,16 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
 
 
     /**
-     * Busca la lista de eventos que un usuario ha marcado como favoritos.
+     * Busca la lista de eventos publicados que un usuario ha marcado como favoritos.
      * @param userId El ID del usuario.
      * @return Una lista de los eventos favoritos de ese usuario.
      */
     // Se usa una consulta JPQL para unir la entidad Favorite con Event y filtrar por el ID del usuario.
-    @Query("SELECT f.event FROM Favorite f WHERE f.user.id = :userId")
+    @Query("SELECT f.event FROM Favorite f WHERE f.user.id = :userId AND f.event.status = 'PUBLISHED'")
     List<Event> findFavoriteEventsByUserId(@Param("userId") Long userId);
 
   /**
-   * Búsqueda avanzada de eventos publicados con filtros dinámicos. 
-   * @param communityName   Nombre de la comunidad autónoma. Filtro obligatorio.
+   * Búsqueda avanzada de eventos publicados y vigentes con filtros dinámicos. 
    * @param provinceName  Nombre de la provincia. Filtro obligatorio.
    * @param eventDate Fecha del evento. Filtro obligatorio.
    * @param themeName   Nombre de la temática. Filtro opcional (puede ser null).
@@ -132,10 +145,9 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
             SELECT e FROM Event e
               JOIN e.municipality m
               JOIN m.province p
-              JOIN p.community c
               JOIN e.dates d
-            WHERE e.status = 'PUBLISHED' 
-              AND c.name = :communityName 
+            WHERE e.status = 'PUBLISHED'
+              AND e.inTime = true
               AND p.name = :provinceName
               AND d.fullDate = :eventDate
               AND (:themeName IS NULL OR e.theme.name = :themeName)
@@ -143,7 +155,6 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
               AND (:maxPrice IS NULL OR e.price <= :maxPrice)
             """) 
         List<Event> searchPublishedEvents(
-                @Param("communityName") String communityName,
                 @Param("provinceName") String provinceName,
                 @Param("eventDate") LocalDate eventDate,
                 @Param("themeName") String themeName,

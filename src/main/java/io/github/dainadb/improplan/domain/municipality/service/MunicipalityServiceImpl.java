@@ -24,7 +24,7 @@ public class MunicipalityServiceImpl extends GenericCrudDtoServiceImpl<Municipal
     @Autowired
     private IMunicipalityRepository municipalityRepository;
 
-    // --- IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS DE LA CLASE GENÉRICA ---
+    // IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS DE LA CLASE GENÉRICA
 
     @Override
     protected JpaRepository<Municipality, Integer> getRepository() {

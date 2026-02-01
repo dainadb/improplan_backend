@@ -52,7 +52,7 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     public LoginResponseDto authenticateUser(LoginRequesttDto loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new UnauthorizedException("Credenciales inválidas"));
+                .orElseThrow(() -> new UnauthorizedException("El email proporcionado no está registrado: "));
 
         validateUserForLogin(user, loginRequest.getPassword());
 

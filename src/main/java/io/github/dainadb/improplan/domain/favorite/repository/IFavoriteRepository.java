@@ -38,4 +38,12 @@ public interface IFavoriteRepository extends JpaRepository<Favorite, Long> {
      */
     long countByEventId(Long eventId);
 
+    /**
+        * Elimina todos los favoritos asociados a un evento específico.
+        * Utilizado cuando un evento es eliminado para limpiar los favoritos relacionados.
+        * 
+        * @param eventId El ID del evento cuyos favoritos se van a eliminar.
+        */
+    void deleteByEventId(Long eventId);
+
 }

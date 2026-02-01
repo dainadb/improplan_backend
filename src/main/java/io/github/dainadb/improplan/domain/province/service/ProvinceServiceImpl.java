@@ -24,7 +24,7 @@ public class ProvinceServiceImpl
     @Autowired
     private IProvinceRepository provinceRepository;
 
-    // --- IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS DE LA CLASE GENÉRICA ---
+    // IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS DE LA CLASE GENÉRICA 
 
     @Override
     protected JpaRepository<Province, Integer> getRepository() {
@@ -46,7 +46,7 @@ public class ProvinceServiceImpl
         return ProvinceResponseDto.class;
     }
 
-    // --- IMPLEMENTACIÓN DE MÉTODOS ESPECÍFICOS DE LA INTERFAZ ---
+    //  IMPLEMENTACIÓN DE MÉTODOS ESPECÍFICOS DE LA INTERFAZ
 
     /**
      * {@inheritDoc}
@@ -55,7 +55,7 @@ public class ProvinceServiceImpl
     public List<ProvinceResponseDto> findByAutonomousCommunityName(String communityName) {
         List<Province> provinces = provinceRepository.findByAutonomousCommunityName(communityName);
         return provinces.stream()
-                .map(this::convertToResponseDto) // Reutiliza el conversor heredado
+                .map(this::convertToResponseDto) // Reutiliza el método heredado
                 .toList();
     }
 

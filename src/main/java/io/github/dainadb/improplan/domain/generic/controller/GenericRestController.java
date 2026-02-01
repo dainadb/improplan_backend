@@ -60,24 +60,5 @@ public abstract class GenericRestController {
         return ResponseEntity.status(201).body(new ApiResponse<>(data, message));
     }
 
-    /**
-     * Devuelve una respuesta HTTP 400 (Bad Request) con un mensaje de error.
-     *
-     * @param <T>     Tipo de dato genérico (vacío en este caso).
-     * @param message Mensaje de error.
-     * @return ResponseEntity con código 400 y cuerpo formateado.
-     */
-    protected <T> ResponseEntity<ApiResponse<T>> failure(String message) {
-        return ResponseEntity.badRequest().body(new ApiResponse<>(message));
-    }
-
-     /**
-     * Devuelve una respuesta HTTP 404 (Not Found) con un mensaje de error.
-     *
-     * @param message Mensaje de error.
-     * @return ResponseEntity con código 404 y cuerpo formateado.
-     */
-    protected <T> ResponseEntity<ApiResponse<T>> notFound(String message) {
-        return ResponseEntity.status(404).body(new ApiResponse<>(message));
-    }
+    
 }

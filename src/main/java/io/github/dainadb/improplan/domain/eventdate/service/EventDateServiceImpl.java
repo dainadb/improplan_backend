@@ -2,12 +2,16 @@ package io.github.dainadb.improplan.domain.eventdate.service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ch.qos.logback.core.model.Model;
+import io.github.dainadb.improplan.domain.eventdate.dto.EventDateResponseDto;
 import io.github.dainadb.improplan.domain.eventdate.entity.EventDate;
 import io.github.dainadb.improplan.domain.eventdate.repository.IEventDateRepository;
 import jakarta.transaction.Transactional;
@@ -20,6 +24,9 @@ public class EventDateServiceImpl implements IEventDateService {
 
     @Autowired
     private IEventDateRepository eventDateRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     /**
      * {@inheritDoc} 
@@ -41,5 +48,25 @@ public class EventDateServiceImpl implements IEventDateService {
                 .collect(Collectors.toSet());
     }
 
-    
+     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EventDateResponseDto> getAllDatesByEventId(Long eventId) {
+        List<EventDate> dates = eventDateRepository.findAllDatesByEventId(eventId);
+        return dates.stream()
+                .map(date -> modelMapper.map(date, EventDateResponseDto.class))
+                .toList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EventDateResponseDto> getUpcomingDatesByEventId(Long eventId) {
+        List<EventDate> dates = eventDateRepository.findUpcomingDatesByEventId(eventId, LocalDate.now());
+        return dates.stream()
+                .map(date -> modelMapper.map(date, EventDateResponseDto.class))
+                .toList();
+    }
 }

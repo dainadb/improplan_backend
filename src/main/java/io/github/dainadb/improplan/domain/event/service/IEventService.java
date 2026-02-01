@@ -1,11 +1,11 @@
 package io.github.dainadb.improplan.domain.event.service;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import io.github.dainadb.improplan.domain.event.dto.EventRequestDto;
 import io.github.dainadb.improplan.domain.event.dto.EventResponseDto;
-import io.github.dainadb.improplan.domain.event.entity.Event;
 import io.github.dainadb.improplan.domain.event.entity.Event.StatusType;
 import io.github.dainadb.improplan.exception.NotFoundException;
 
@@ -82,84 +82,97 @@ public interface IEventService {
      * Busca eventos cuyo nombre contenga la cadena dada, ignorando mayúsculas y minúsculas.
      * @param name Cadena a buscar en los nombres de los eventos.
      */
-    List<Event> findByContainingName(String name);
+    List<EventResponseDto> findByContainingName(String name);
 
     /**
      * Busca eventos en municipio específico.
      * @param name Nombre del municipio.
      */
-    List<Event> findByMunicipalityName(String name);
+    List<EventResponseDto> findByMunicipalityName(String name);
 
     /**
      * Busca eventos en provincia específica.
      * @param name Nombre de la provincia.
      */
-    List<Event> findByProvinceName(String name);
-
-    /**
-    * Busca eventos en comunidad autónoma específica.
-    * @param name Nombre de la comunidad autónoma.
-    */
-    List<Event> findByAutonomousCommunityName (String name);
+    List<EventResponseDto> findByProvinceName(String name);
 
     /**
      * Busca eventos de una temática específica.
      * @param name Nombre de la temática.
      */
-    List<Event> findByThemeName(String name); 
+    List<EventResponseDto> findByThemeName(String name); 
 
     /**
      * Busca eventos según si son gratuitos o no.
      * @param isFree true para eventos gratuitos, false para de pago.
      */
-    List<Event> findByIsFree(Boolean isFree);
+    List<EventResponseDto> findByIsFree(Boolean isFree);
 
     /**
      * Busca eventos por su precio máximo.
      * @param maxPrice Precio máximo.
      */
-    List<Event> findByMaxPrice(Double maxPrice);
+    List<EventResponseDto> findByMaxPrice(Double maxPrice);
 
     /**
      * Busca eventos por una fecha específica.
      * @param fullDate Fecha completa.
      */
-    List<Event> findByDate(LocalDate fullDate);
+    List<EventResponseDto> findByDate(LocalDate fullDate);
     
     /**
      * Busca eventos por su estado.
      * @param status Estado del evento.
      */
-    List<Event> findByStatus(StatusType status);
+    List<EventResponseDto> findByStatus(String status);
 
     /**
      * Busca eventos según si están a tiempo o no.
      * @param inTime true para eventos a tiempo, false para eventos pasados.
      */
-    List<Event> findByInTime(Boolean inTime);
+    List<EventResponseDto> findByInTime(Boolean inTime);
 
     /**
      * Busca eventos según si están a tiempo y su estado.
      * @param inTime true para eventos a tiempo, false para eventos pasados.
      * @param status Estado del evento.
      */
-    List<Event> findByInTimeAndStatus(Boolean inTime, StatusType status);
+    List<EventResponseDto> findByInTimeAndStatus(Boolean inTime, String status);
+
+      /**
+     * Busca eventos que no están descartados y que están fuera de tiempo.
+     * @param inTime False para eventos pasados.
+     * @param statuses Colección de estados por los que filtrar (ej. PUBLISHED, PENDING).
+     */
+    List<EventResponseDto> findOutTimeAndNotDiscarded( Boolean inTime, Collection<String> statuses);
+
+    /**
+     * Cuenta cuántos eventos hay en un estado específico.
+     * @param status Estado del evento.
+     */
+    long countEventsByStatus(String status);
+
+    /**
+     * Cuenta cuántos eventos hay según si están a tiempo o no.
+     * @param inTime true para eventos a tiempo, false para eventos pasados.
+     */
+    long countEventsByInTime(Boolean inTime);
 
     /**
      * Busca eventos asociados a un usuario específico por su email.
      * @param email Email del usuario.
      */
-    List<Event> findByUserEmail (String email);
+    List<EventResponseDto> findByUserEmail (String email);
 
+  
     /**
-    * Obtiene los eventos favoritos de un usuario específico.
+    * Obtiene los eventos publicados (estado PUBLISHED) favoritos de un usuario específico.
     * @param userId ID del usuario.
     */
-    List<Event> findFavoriteEventsByUser(Long userId);
+    List<EventResponseDto> findFavoriteEventsByUser(Long userId);
 
     /**
      * Busca eventos publicados que coincidan con los criterios de búsqueda proporcionados. 
-     * @param communityName Nombre de la comunidad autónoma (obligatorio)
      * @param provinceName Nombre de la provincia. (obligatorio)
      * @param eventDate Fecha del evento. (obligatorio)
      * @param themeName Nombre de la temática. (opcional)
@@ -167,8 +180,7 @@ public interface IEventService {
      * @param maxPrice Precio máximo. (opcional)
      * @return
      */
-     List<Event> searchPublishedEvents( String communityName,
-                                        String provinceName,
+     List<EventResponseDto> searchPublishedEvents( String provinceName,
                                         LocalDate eventDate,
                                         String themeName,
                                         String municipalityName,

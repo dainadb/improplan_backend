@@ -1,8 +1,10 @@
 package io.github.dainadb.improplan.domain.event.service;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,14 @@ import io.github.dainadb.improplan.domain.event.entity.Event.StatusType;
 import io.github.dainadb.improplan.domain.event.repository.IEventRepository;
 import io.github.dainadb.improplan.domain.eventdate.entity.EventDate;
 import io.github.dainadb.improplan.domain.eventdate.service.IEventDateService;
+import io.github.dainadb.improplan.domain.favorite.repository.IFavoriteRepository;
 import io.github.dainadb.improplan.domain.municipality.entity.Municipality;
 import io.github.dainadb.improplan.domain.municipality.repository.IMunicipalityRepository;
 import io.github.dainadb.improplan.domain.theme.entity.Theme;
 import io.github.dainadb.improplan.domain.theme.repository.IThemeRepository;
 import io.github.dainadb.improplan.domain.user.entity.User;
 import io.github.dainadb.improplan.domain.user.repository.IUserRepository;
+import io.github.dainadb.improplan.exception.BadRequestException;
 import io.github.dainadb.improplan.exception.NotFoundException;
 import io.github.dainadb.improplan.exception.ValidationException;
 import jakarta.transaction.Transactional;
@@ -47,6 +51,9 @@ public class EventServiceImpl  implements IEventService {
 
     @Autowired
     private IEventDateService eventDateService;
+
+    @Autowired
+    private IFavoriteRepository favoriteRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -174,6 +181,10 @@ public class EventServiceImpl  implements IEventService {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No se puede descartar el evento. No encontrado con ID: " + id));
         event.setStatus(StatusType.DISCARDED);
+
+        //Al cambiar a descartado, se eliminan todos los favoritos asociados a ese evento
+        favoriteRepository.deleteByEventId(id);
+
         eventRepository.save(event);
     }
 
@@ -203,122 +214,199 @@ public class EventServiceImpl  implements IEventService {
      * {@inheritDoc}
      */
     @Override
-    public List<Event> findByContainingName(String name) {
-        return eventRepository.findByNameContainingIgnoreCase(name);
+    public List<EventResponseDto> findByContainingName(String name) {
+        return eventRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(this::convertToResponseDto)
+                .toList();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Event> findByMunicipalityName(String name) {
-        return eventRepository.findByMunicipalityNameIgnoreCase(name);
+    public List<EventResponseDto> findByMunicipalityName(String name) {
+        return eventRepository.findByMunicipalityNameIgnoreCase(name).stream()
+                .map(this::convertToResponseDto)
+                .toList();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Event> findByProvinceName(String name) {
-        return eventRepository.findByProvinceNameIgnoreCase(name);
+    public List<EventResponseDto> findByProvinceName(String name) {
+        return eventRepository.findByProvinceNameIgnoreCase(name).stream()
+                .map(this::convertToResponseDto)
+                .toList();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EventResponseDto> findByThemeName(String name) {
+        return eventRepository.findByThemeNameIgnoreCase(name).stream()
+                .map(this::convertToResponseDto)
+                .toList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EventResponseDto> findByIsFree(Boolean isFree) {
+        return eventRepository.findByIsFree(isFree).stream()
+                .map(this::convertToResponseDto)
+                .toList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EventResponseDto> findByMaxPrice(Double maxPrice) {
+        return eventRepository.findByPriceLessThanEqual(maxPrice).stream()
+                .map(this::convertToResponseDto)
+                .toList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EventResponseDto> findByDate(LocalDate fullDate) {
+        return eventRepository.findByDatesFullDate(fullDate).stream()
+                .map(this::convertToResponseDto)
+                .toList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EventResponseDto> findByStatus(String status) {
+        try{ //COnversión de String a enum
+            StatusType statusType = StatusType.valueOf(status.toUpperCase());
+            return eventRepository.findByStatus(statusType).stream()
+                    .map(this::convertToResponseDto)
+                    .toList();
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Estado de evento inválido: " + status);
+        }
+        
+       
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EventResponseDto> findByInTime(Boolean inTime) {
+        return eventRepository.findByInTime(inTime).stream()
+                .map(this::convertToResponseDto)
+                .toList();
     }
 
     /**
      *{@inheritDoc}
      */
     @Override
-    public List<Event> findByAutonomousCommunityName(String name) {
-        return eventRepository.findByAutonomousCommunityNameIgnoreCase(name);
+    public List<EventResponseDto> findByInTimeAndStatus(Boolean inTime, String status) {
+       try{
+            StatusType statusType = StatusType.valueOf(status.toUpperCase());
+            return eventRepository.findByInTimeAndStatus(inTime, statusType).stream()
+                .map(this::convertToResponseDto)
+                .toList();
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Estado de evento inválido: " + status);
+       }
+        
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Event> findByThemeName(String name) {
-        return eventRepository.findByThemeNameIgnoreCase(name);
+     public List<EventResponseDto> findOutTimeAndNotDiscarded(Boolean inTime, Collection<String> statuses) {
+        try{
+            //Convertimos los String a StatusType
+            Set<StatusType> statusTypes = statuses.stream()
+                    .map(status -> StatusType.valueOf(status.toUpperCase()))
+                    .collect(Collectors.toSet());
+            
+            return eventRepository.findByInTimeAndStatusIn(false, statusTypes).stream()
+                    .map(this::convertToResponseDto)
+                    .toList();
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Uno o más estados de evento inválidos en la lista proporcionada.");
+        }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+     public long countEventsByStatus(String status) {
+        try {
+            StatusType statusType = StatusType.valueOf(status.toUpperCase());
+            return eventRepository.countByStatus(statusType);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Estado de evento inválido: " + status);
+        }
+     }
+
+    /**
+     * {@inheritDoc}
+     */
+     @Override
+     public long countEventsByInTime(Boolean inTime) {
+        return eventRepository.countByInTime(inTime);
+     }
+
+     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EventResponseDto> findByUserEmail(String email) {
+        return eventRepository.findByUserEmail(email).stream()
+                .map(this::convertToResponseDto)
+                .toList();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Event> findByIsFree(Boolean isFree) {
-        return eventRepository.findByIsFree(isFree);
+    public List<EventResponseDto> findFavoriteEventsByUser(Long userId) {
+        return eventRepository.findFavoriteEventsByUserId(userId).stream()
+                .map(this::convertToResponseDto)
+                .toList();
     }
 
     /**
      * {@inheritDoc}
      */
+    //Solo se mostrarán los eventos que estén publicados y vigentes y que cumplan los filtros
     @Override
-    public List<Event> findByMaxPrice(Double maxPrice) {
-        return eventRepository.findByPriceLessThanEqual(maxPrice);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Event> findByDate(LocalDate fullDate) {
-        return eventRepository.findByDatesFullDate(fullDate);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Event> findByStatus(StatusType status) {
-        return eventRepository.findByStatus(status);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Event> findByInTime(Boolean inTime) {
-        return eventRepository.findByInTime(inTime);
-    }
-
-    /**
-     *{@inheritDoc}
-     */
-    @Override
-    public List<Event> findByInTimeAndStatus(Boolean inTime, StatusType status) {
-        return eventRepository.findByInTimeAndStatus(inTime, status);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Event> findByUserEmail(String email) {
-        return eventRepository.findByUserEmail(email);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Event> findFavoriteEventsByUser(Long userId) {
-        return eventRepository.findFavoriteEventsByUserId(userId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Event> searchPublishedEvents(String communityName, String provinceName, LocalDate eventDate,
+    public List<EventResponseDto> searchPublishedEvents( String provinceName, LocalDate eventDate,
             String themeName, String municipalityName, Double maxPrice) {
-        return eventRepository.searchPublishedEvents(communityName.toLowerCase(),  provinceName.toLowerCase(),eventDate,
+            List<Event> events = eventRepository.searchPublishedEvents(provinceName.toLowerCase(),eventDate,
                                                     themeName != null ? themeName.toLowerCase() : null, //Indicamos que si no es null, se pase en minúsculas y si es null, se pase como null
                                                     municipalityName != null ? municipalityName.toLowerCase() : null,
                                                     maxPrice);
+        return events.stream()
+                     .map(this::convertToResponseDto)
+                     .toList() ;
     }
 
    
-  
+ 
 
-     // MÉTODO PRIVADO DE VALIDACIÓN 
+     // MÉTODO PRIVADOS DE VALIDACIÓN Y UTILIDAD
      /**
       * Valida los datos del DTO de solicitud de evento.
       * @param dto DTO de solicitud de evento
@@ -340,8 +428,8 @@ public class EventServiceImpl  implements IEventService {
         }
     }
 
-   
-
-   
+    private EventResponseDto convertToResponseDto(Event event) {
+        return modelMapper.map(event, EventResponseDto.class);
+    }
 
 }

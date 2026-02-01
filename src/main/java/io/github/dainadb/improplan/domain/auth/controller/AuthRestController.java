@@ -22,7 +22,7 @@ import io.github.dainadb.improplan.domain.user.dto.UserResponseDto;
 import jakarta.validation.Valid;
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthRestController extends GenericRestController {
 
     @Autowired
@@ -69,7 +69,7 @@ public class AuthRestController extends GenericRestController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponseDto>> register(@RequestBody @Valid RegisterUserDto registerDto) {
         UserResponseDto response = authService.registerUser(registerDto);
-        return success(response, "Usuario registrado correctamente");
+        return created(response, "Usuario registrado correctamente");
     }
     
     /**
