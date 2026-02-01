@@ -52,7 +52,7 @@ public class MunicipalityRestController extends GenericRestController {
      * @return ResponseEntity con una lista de municipios que coinciden con el criterio.
      */
   
-    @GetMapping("/search")
+    @GetMapping("/by-name")
     public ResponseEntity<ApiResponse<List<MunicipalityResponseDto>>> searchMunicipalitiesByName(@RequestParam String name) {
         List<MunicipalityResponseDto> municipalities = municipalityService.findByNameContaining(name);
         return success(municipalities, "Búsqueda de municipios por nombre completada.");

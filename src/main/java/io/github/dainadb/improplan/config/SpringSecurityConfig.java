@@ -35,14 +35,76 @@ public class SpringSecurityConfig {
             httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
+
+                
                 .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(HttpMethod.GET, "/auth/get").permitAll()
-                    .anyRequest().permitAll() //Provisional
-                )
+                
+                // Endpoints Públicos (permitAll) 
+
+                // Autenticacióny registro
+                .requestMatchers(HttpMethod.POST, "/api/auth/login", 
+                                                  "/api/auth/register"
+                                                  ).permitAll()
+                // Consultas de comunidades, provincias, municipios, temas y roles.
+                .requestMatchers(HttpMethod.GET, 
+                    "/api/communities/**", 
+                    "/api/provinces/**", 
+                    "/api/municipalities/**", 
+                    "/api/themes/**", 
+                    "/api/roles/**"
+                ).permitAll()
+                // Búsqueda de eventos y detalles.
+                .requestMatchers(HttpMethod.GET, 
+                    "/api/events/filters", 
+                    "/api/events/{id}", 
+                    "/api/events/{eventId}/dates/**",
+                    "/api/favorites/count/{eventId}"
+                ).permitAll()
+
+                //  Endpoints para Administradores (hasRole("ROLE_ADMIN")) 
+
+                // Gestión de eventos
+                .requestMatchers(HttpMethod.PUT, "/api/events/update/{id}").hasRole("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/events/harddelete/{id}",
+                                                    "/api/events/softdelete/{id}"
+                                                    ).hasRole("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/events/publish/{id}").hasRole("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.GET, 
+                    "/api/events/intime/status",
+                    "/api/events/discarded", 
+                    "/api/events/outtime", 
+                    "/api/events/count/**",
+                    "/api/events/user/{email}"
+
+                ).hasRole("ROLE_ADMIN")
+                // Gestión de usuarios.
+                .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/users/**").hasRole("ROLE_ADMIN")
+
+
+                //  Endpoints para Usuarios Autenticados (authenticated) 
+
+                // Logout y obtener/modificar datos del propio usuario.
+                .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/users/{id}/profile",
+                                                 "/api/users/{id}/change-password"
+                                                 ).authenticated()
+                // Creación de eventos por parte del usuario.
+                .requestMatchers(HttpMethod.POST, "/api/events/create").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/events/user/{email}").authenticated()
+                // Gestión de la lista de favoritos.
+                .requestMatchers("/api/favorites/**").authenticated()
+
+                // Cualquier otra petición no definida explícitamente requerirá autenticación.
+                .anyRequest().authenticated() 
+            )
+
+
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults()
-            );
 
+            );
             return httpSecurity.build();
     }
 

@@ -63,7 +63,7 @@ public class AutCommunityRestController extends GenericRestController {
      * @return ResponseEntity con los datos de la comunidad encontrada.
      */
    
-    @GetMapping("/search")
+    @GetMapping("/by-name")
     public ResponseEntity<ApiResponse<AutCommunityResponseDto>> getCommunityByName(@RequestParam String name) {
         AutCommunityResponseDto community = autCommunityService.findByName(name);
         return success(community, "Comunidad autónoma encontrada con éxito.");

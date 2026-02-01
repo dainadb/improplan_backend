@@ -36,7 +36,7 @@ public class FavoriteRestController extends GenericRestController {
      * @param favoriteRequestDto Datos del evento a añadir a favoritos.
      * @return Respuesta con los detalles del evento añadido.
      */
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<ApiResponse<FavoriteResponseDto>> addFavorite(@RequestBody FavoriteRequestDto favoriteRequestDto) {
         String userEmail = getEmail(); // Obtiene el email del usuario autenticado
         FavoriteResponseDto newFavorite = favoriteService.addFavorite(favoriteRequestDto, userEmail);
@@ -48,7 +48,7 @@ public class FavoriteRestController extends GenericRestController {
      * @param eventId ID del evento a eliminar de favoritos.
      * @return Respuesta indicando el éxito de la operación.
      */
-    @DeleteMapping("/event/{eventId}")
+    @DeleteMapping("/delete/{eventId}")
     public ResponseEntity<ApiResponse<Void>> removeFavorite(@PathVariable Long eventId) {
         String userEmail = getEmail(); 
         favoriteService.removeFavorite(eventId, userEmail);
@@ -67,11 +67,11 @@ public class FavoriteRestController extends GenericRestController {
     }
 
    /**
-     * Cuenta cuántos usuarios han marcado un evento específico como favorito.
+     * Cuenta cuantas veces se ha marcado un evento específico como favorito.
      * @param eventId ID del evento.
      * @return Respuesta con el recuento de favoritos para el evento.
      */
-    @GetMapping("/count/event/{eventId}")
+    @GetMapping("/count/{eventId}")
     public ResponseEntity<ApiResponse<Long>> countFavoritesByEvent(@PathVariable Long eventId) {
         Long count = favoriteService.countFavoritesByEventId(eventId);
         return success(count, "Recuento de favoritos para el evento " + eventId + ".");
