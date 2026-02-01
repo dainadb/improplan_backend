@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.dainadb.improplan.common.response.ApiResponse;
@@ -21,7 +22,7 @@ import io.github.dainadb.improplan.domain.theme.service.IThemeService;
  */
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/themes")
+@RequestMapping("/api/themes")
 public class ThemeRestController extends GenericRestController {
 
     @Autowired
@@ -53,8 +54,8 @@ public class ThemeRestController extends GenericRestController {
      * @param name El nombre de la temática a buscar.
      * @return ResponseEntity con la temática encontrada.
      */
-    @GetMapping("/name/{name}")
-    public ResponseEntity<ApiResponse<ThemeResponseDto>> getThemeByName(@PathVariable String name) {
+    @GetMapping("/by-name")
+    public ResponseEntity<ApiResponse<ThemeResponseDto>> getThemeByName(@RequestParam String name) {
         ThemeResponseDto theme = themeService.findByName(name);
         return success(theme, "Temática encontrada con éxito.");
     }

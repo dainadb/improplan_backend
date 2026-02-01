@@ -34,8 +34,5 @@ public class EventRequestDto {
     private Event.StatusType status; // Es un campo que por defecto será PENDING cuando se cree un evento. El administrador podrá cambiarlo a PUBLISHED o DISCARDED.
     private String municipalityName;
     private String themeName;
-    
-    @NotNull(message = "Las fechas son obligatorias")
-    @NotEmpty(message = "Debe haber al menos una fecha")
     private Set<LocalDate> eventDates;
 }

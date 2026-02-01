@@ -19,7 +19,6 @@ import io.github.dainadb.improplan.domain.auth.dto.RegisterUserDto;
 import io.github.dainadb.improplan.domain.auth.service.IAuthService;
 import io.github.dainadb.improplan.domain.generic.controller.GenericRestController;
 import io.github.dainadb.improplan.domain.user.dto.UserResponseDto;
-import jakarta.validation.Valid;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/auth")
@@ -35,7 +34,7 @@ public class AuthRestController extends GenericRestController {
      */
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody @Valid LoginRequesttDto loginDto) {
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginRequesttDto loginDto) {
         LoginResponseDto response = authService.authenticateUser(loginDto);
 
         //Se crea un objeto de autenticación con los 3 parámetros: principal (email), credentials (null porque ya se ha autenticado) y authorities (roles)
@@ -67,7 +66,7 @@ public class AuthRestController extends GenericRestController {
      * @return Respuesta en formato ApiResponse con los detalles del usuario registrado.
      */
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserResponseDto>> register(@RequestBody @Valid RegisterUserDto registerDto) {
+    public ResponseEntity<ApiResponse<UserResponseDto>> register(@RequestBody RegisterUserDto registerDto) {
         UserResponseDto response = authService.registerUser(registerDto);
         return created(response, "Usuario registrado correctamente");
     }

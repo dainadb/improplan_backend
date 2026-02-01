@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.dainadb.improplan.common.response.ApiResponse;
@@ -70,8 +71,8 @@ public class UserRestController extends GenericRestController {
      * @param roleName Nombre del rol (ej. "ROLE_ADMIN", "ROLE_USER").
      * @return ResponseEntity con la lista de usuarios que coinciden.
      */
-    @GetMapping("/filter/role/{roleName}")
-    public ResponseEntity<ApiResponse<List<UserResponseDto>>> getUsersByRole(@PathVariable String roleName) {
+    @GetMapping("/by-role")
+    public ResponseEntity<ApiResponse<List<UserResponseDto>>> getUsersByRole(@RequestParam String roleName) {
         List<UserResponseDto> users = userService.findByRole(roleName);
         return success(users, "Usuarios filtrados por rol: " + roleName);
     }
@@ -81,8 +82,8 @@ public class UserRestController extends GenericRestController {
      * @param enabled `true` para buscar usuarios habilitados, `false` para deshabilitados.
      * @return ResponseEntity con la lista de usuarios que coinciden.
      */
-    @GetMapping("/filter/enabled/{enabled}")
-    public ResponseEntity<ApiResponse<List<UserResponseDto>>> getUsersByEnabledStatus(@PathVariable boolean enabled) {
+    @GetMapping("/by-enabled")
+    public ResponseEntity<ApiResponse<List<UserResponseDto>>> getUsersByEnabledStatus(@RequestParam boolean enabled) {
         List<UserResponseDto> users = userService.findByEnabled(enabled);
         return success(users, "Usuarios filtrados por estado 'enabled': " + enabled);
     }

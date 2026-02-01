@@ -23,16 +23,6 @@ public abstract class GenericRestController {
         //auth.getName() devuelve el valor del método getUsername() de la entidad User, que es el email.
     }
 
-    /**
-     * Verifica si el usuario autenticado tiene el rol de administrador.
-     *
-     * @return true si el usuario tiene el rol ROLE_ADMIN, false en caso contrario.
-     */
-    protected boolean isAdmin() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication(); //El objeto auth 
-        return auth != null && auth.getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
-    }
 
     /**
      * Devuelve una respuesta HTTP 200 (OK) con un cuerpo estándar de tipo

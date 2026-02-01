@@ -51,6 +51,10 @@ public class AuthServiceImpl implements IAuthService {
      */
     @Override
     public LoginResponseDto authenticateUser(LoginRequesttDto loginRequest) {
+        if(!Validator.isValidEmail(loginRequest.getEmail())){
+            throw new BadRequestException("El email no tiene un formato válido: " + loginRequest.getEmail());
+        }
+
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new UnauthorizedException("El email proporcionado no está registrado: "));
 

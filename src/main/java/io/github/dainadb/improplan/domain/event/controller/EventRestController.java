@@ -58,7 +58,7 @@ public class EventRestController extends GenericRestController {
      * @param id ID del evento.
      * @return ResponseEntity con el evento encontrado.
      */
-    @GetMapping("/find/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EventResponseDto>> getEventById(@PathVariable Long id) {
         EventResponseDto event = eventService.findById(id);
         return success(event, "Evento encontrado.");
@@ -116,8 +116,8 @@ public class EventRestController extends GenericRestController {
      * @param status Estado de los eventos a recuperar (PENDING o PUBLISHED).
      * @return  Lista de eventos vigentes
      */
-    @GetMapping("/find/intime/{status}")
-    public ResponseEntity<ApiResponse<List<EventResponseDto>>> getEventsStatusInTime(@PathVariable String status) {
+    @GetMapping("/intime/status")
+    public ResponseEntity<ApiResponse<List<EventResponseDto>>> getEventsStatusInTime(@RequestParam String status) {
         List<EventResponseDto> events = eventService.findByInTimeAndStatus(true, status);
         return success(events, "Eventos vigentes recuperados con estado " + status + ".");
     }
@@ -126,7 +126,7 @@ public class EventRestController extends GenericRestController {
      * Obtiene todos los eventos descartados.
      * @return Lista de eventos descartados.
      */
-    @GetMapping("/find/discarded")
+    @GetMapping("/discarded")
     public ResponseEntity<ApiResponse<List<EventResponseDto>>> getEventDiscarded() {
         List<EventResponseDto> events = eventService.findByStatus(StatusType.DISCARDED.name());
         return success(events, "Eventos descartados recuperados.");
@@ -137,7 +137,7 @@ public class EventRestController extends GenericRestController {
      * Obtiene  los eventos no descartados que han pasado su fecha (fuera de tiempo).
      * @return Lista de eventos fuera de tiempo.
      */
-    @GetMapping("/find/outtime")
+    @GetMapping("/outtime")
     public ResponseEntity<ApiResponse<List<EventResponseDto>>> outTimeEventNotDiscarded(){
         List<EventResponseDto> events = eventService.findOutTimeAndNotDiscarded(false, List.of(StatusType.PUBLISHED.name(), StatusType.PENDING.name()));
         return success(events, "Eventos fuera de tiempo recuperados.");
@@ -148,7 +148,7 @@ public class EventRestController extends GenericRestController {
      * Obtiene el número total de eventos pendientes.
      * @return Conteo de eventos con estado PENDING.
      */
-    @GetMapping("/find/count/pending")
+    @GetMapping("/count/pending")
     public ResponseEntity<ApiResponse<Long>> countPendingEvents() {
         long count = eventService.countEventsByStatus(StatusType.PENDING.name());
         return success(count, "Conteo de eventos pendientes");
@@ -158,7 +158,7 @@ public class EventRestController extends GenericRestController {
      * Obtiene el número total de eventos descartados.
      * @return Conteo de eventos con estado DISCARDED.
      */
-    @GetMapping("/find/count/discarded")
+    @GetMapping("/count/discarded")
     public ResponseEntity<ApiResponse<Long>> countDiscardedEvents() {
         long count = eventService.countEventsByStatus(StatusType.DISCARDED.name());
         return success(count, "Conteo de eventos descartados");
@@ -169,7 +169,7 @@ public class EventRestController extends GenericRestController {
      * Obtiene el número total de eventos que han pasado su fecha (fuera de tiempo).
      * @return Conteo de eventos con inTime = false.
      */
-    @GetMapping("/find/count/outtime")
+    @GetMapping("/count/outtime")
     public ResponseEntity<ApiResponse<Long>> countOutTimeEvents() {
         long count = eventService.countEventsByInTime(false);
         return success(count, "Conteo de eventos fuera de tiempo");
@@ -180,16 +180,16 @@ public class EventRestController extends GenericRestController {
      * Búsqueda avanzada de eventos publicados y vigentes.
      *
      * @param provinceName     Nombre de la provincia (obligatorio).
-     * @param eventDate        Fecha del evento (opcional).
+     * @param eventDate        Fecha del evento (obligatorio). Se usa el @DateTimeFormat para asegurar el formato correcto.
      * @param themeName        Nombre de la temática (opcional).
      * @param municipalityName Nombre del municipio (opcional).
      * @param maxPrice         Precio máximo (opcional).
      * @return Lista de eventos que cumplen con los criterios de búsqueda.
      */
-    @GetMapping("/search")
+    @GetMapping("/filters")
     public ResponseEntity<ApiResponse<List<EventResponseDto>>> searchPublishedEvents(
             @RequestParam String provinceName,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate eventDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate eventDate,
             @RequestParam(required = false) String themeName,
             @RequestParam(required = false) String municipalityName,
             @RequestParam(required = false) Double maxPrice) {
@@ -225,8 +225,6 @@ public class EventRestController extends GenericRestController {
         List<EventResponseDto> events = eventService.findByUserEmail(email);
         return success(events, "Eventos encontrados para el usuario " + email);
     }
-
-   
 
     
 }

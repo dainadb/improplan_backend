@@ -22,14 +22,14 @@ import io.github.dainadb.improplan.domain.province.service.IProvinceService;
  */
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/v1/provinces")
+@RequestMapping("/api/provinces")
 public class ProvinceRestController extends GenericRestController {
 
     @Autowired
     private IProvinceService provinceService;
 
   
-    @GetMapping
+    @GetMapping("/by-community")
     public ResponseEntity<ApiResponse<List<ProvinceResponseDto>>> getProvincesByCommunity(@RequestParam String communityName) {
         
         List<ProvinceResponseDto> provinces = provinceService.findByAutonomousCommunityName(communityName);
@@ -45,7 +45,7 @@ public class ProvinceRestController extends GenericRestController {
     }
 
    
-    @GetMapping("/search")
+    @GetMapping("/by-name")
     public ResponseEntity<ApiResponse<ProvinceResponseDto>> getProvinceByName( @RequestParam String name) {
         
         ProvinceResponseDto province = provinceService.findByName(name);
