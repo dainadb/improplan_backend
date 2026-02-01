@@ -53,6 +53,11 @@ public class FavoriteServiceImpl implements IFavoriteService {
         favoriteRepository.findByUserIdAndEventId(user.getId(), event.getId()).ifPresent(f -> {
             throw new ConflictException("Este evento ya está en tus favoritos.");
         });
+        // Comprobar que el evento está publicado antes de añadirlo a favoritos
+        if (event.getStatus() != Event.StatusType.PUBLISHED) {
+            throw new ConflictException("No se puede añadir a favoritos un evento que no está publicado. Estado actual: " + event.getStatus());
+        }
+
 
         //No se usa ModelMapper porque todas las propiedades de Favorite requieren lógica de negocio específica
         Favorite favorite = new Favorite();

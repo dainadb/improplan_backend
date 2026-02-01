@@ -1,8 +1,10 @@
 package io.github.dainadb.improplan.domain.eventdate.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
+import io.github.dainadb.improplan.domain.eventdate.dto.EventDateResponseDto;
 import io.github.dainadb.improplan.domain.eventdate.entity.EventDate;
 
 /**
@@ -18,4 +20,20 @@ public interface IEventDateService {
      * @return Un conjunto de entidades EventDate persistidas.
      */
     Set<EventDate> findOrCreateDates(Set<LocalDate> dates);
+
+      /**
+     * Devuelve todas las fechas asociadas a un evento específico, ordenadas cronológicamente.
+     *
+     * @param eventId El ID del evento.
+     * @return Una lista de DTOs de las fechas del evento.
+     */
+    List<EventDateResponseDto> getAllDatesByEventId(Long eventId);
+
+    /**
+     * Devuelve solo las fechas futuras (o de hoy) de un evento específico, ordenadas cronológicamente.
+     *
+     * @param eventId El ID del evento.
+     * @return Una lista de DTOs de las fechas futuras del evento.
+     */
+    List<EventDateResponseDto> getUpcomingDatesByEventId(Long eventId);
 }

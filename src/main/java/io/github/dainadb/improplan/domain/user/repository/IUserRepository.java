@@ -3,8 +3,6 @@ package io.github.dainadb.improplan.domain.user.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import io.github.dainadb.improplan.domain.role.entity.Role.RoleType;
@@ -52,17 +50,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
      */
     List<User> findByEnabled(Boolean enabled);
     
-    //MÉTODOS PAGINADOS
+    //MÉTODOS PAGINADOS (posible implementación futura)
     
-    //Valorar si es necesario añadir más métodos paginados.
-    /**
-     * Recupera una página de usuarios.
-     * @param pageable Objeto Pageable que define la paginación y ordenación.
-     * @return Una página de usuarios.
-     */
-    Page<User> findAll(Pageable pageable);
-
-    
-
 
 }
