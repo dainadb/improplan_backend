@@ -10,6 +10,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.github.dainadb.improplan.domain.auth.dto.LoginResponseDto;
 import io.github.dainadb.improplan.domain.event.dto.EventRequestDto;
 import io.github.dainadb.improplan.domain.event.dto.EventResponseDto;
 import io.github.dainadb.improplan.domain.event.entity.Event;
@@ -116,11 +117,22 @@ public class ModelMapperConfig {
                     }
                 });
        
-       
+        /**
+         * Mapeo personalizado de User a LoginResponseDto
+         */
+        modelMapper.typeMap(User.class, LoginResponseDto.class)
+                .addMappings(new PropertyMap<User, LoginResponseDto>() {
+                    @Override
+                    protected void configure() {
+                        // Reutilizamos el mismo conversor de roles
+                        using(roleConverter).map(source.getRoles(), destination.getRoles());
+                    }
+                });
+
+                
         /**
         * Conversor para mapear Set<EventDate> a Set<LocalDate> (fecha del evento)
         */
-
         Converter<Set<EventDate>, Set<LocalDate>> eventDateConverter = ctx -> ctx.getSource().stream() 
                 .map(EventDate::getFullDate) //Method reference: de cada objeto EventDate se obtiene la fecha completa (LocalDate) usando el método getFullDate().
                 .collect(Collectors.toSet());

@@ -61,6 +61,22 @@ public class SpringSecurityConfig {
                     "/api/favorites/count/{eventId}"
                 ).permitAll()
 
+
+                   //  Endpoints para Usuarios Autenticados (authenticated) 
+
+                // Logout y obtener/modificar datos del propio usuario.
+                .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/users/{id}/profile",
+                                                 "/api/users/{id}/change-password"
+                                                 ).authenticated()
+                // Creación de eventos por parte del usuario.
+                .requestMatchers(HttpMethod.POST, "/api/events/create").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/events/user/{email}").authenticated()
+                // Gestión de la lista de favoritos.
+                .requestMatchers("/api/favorites/**").authenticated()
+
+                
                 //  Endpoints para Administradores (hasRole("ROLE_ADMIN")) 
 
                 // Gestión de eventos
@@ -81,19 +97,6 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/api/users/**").hasAuthority("ROLE_ADMIN")
 
-                //  Endpoints para Usuarios Autenticados (authenticated) 
-
-                // Logout y obtener/modificar datos del propio usuario.
-                .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
-                .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/api/users/{id}/profile",
-                                                 "/api/users/{id}/change-password"
-                                                 ).authenticated()
-                // Creación de eventos por parte del usuario.
-                .requestMatchers(HttpMethod.POST, "/api/events/create").authenticated()
-                .requestMatchers(HttpMethod.GET, "/api/events/user/{email}").authenticated()
-                // Gestión de la lista de favoritos.
-                .requestMatchers("/api/favorites/**").authenticated()
 
                 // Cualquier otra petición no definida explícitamente requerirá autenticación.
                 .anyRequest().authenticated() 

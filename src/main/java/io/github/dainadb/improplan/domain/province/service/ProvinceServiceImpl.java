@@ -53,7 +53,8 @@ public class ProvinceServiceImpl
      */
     @Override
     public List<ProvinceResponseDto> findByAutonomousCommunityName(String communityName) {
-        List<Province> provinces = provinceRepository.findByAutonomousCommunityName(communityName);
+
+        List<Province> provinces = provinceRepository.findByAutonomousCommunityNameIgnoreCase(communityName.trim());
         return provinces.stream()
                 .map(this::convertToResponseDto) // Reutiliza el método heredado
                 .toList();

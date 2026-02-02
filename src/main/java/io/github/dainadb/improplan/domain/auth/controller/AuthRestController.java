@@ -3,6 +3,7 @@ package io.github.dainadb.improplan.domain.auth.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -76,12 +77,10 @@ public class AuthRestController extends GenericRestController {
      * @return Respuesta en formato ApiResponse con los detalles del usuario autenticado.
      */
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UserResponseDto>> getAuthenticatedUser() {
-        UserResponseDto user = authService.getCurrentUser(getEmail()); //Con el método getEmail de la clase GenericRestController obtenemos el email del usuario autenticado
+    public ResponseEntity<ApiResponse<UserResponseDto>> getAuthenticatedUser(Authentication authentication) {
+        String email = authentication.getName();
+        UserResponseDto user = authService.getCurrentUser(email);
         return success(user, "Usuario autenticado");
     }
-
-
-
 
 }

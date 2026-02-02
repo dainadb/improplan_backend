@@ -18,8 +18,8 @@ public interface IProvinceRepository extends JpaRepository<Province, Integer> {
      * @param name Nombre de la comunidad autónoma.
      * @return Lista de provincias que pertenecen a la comunidad autónoma con el nombre dado.
      */
-    //No se indica containgIgnoreCase porque la búsqueda que se hará en el front será mediante un desplegable con los nombres exactos
-    List<Province> findByAutonomousCommunityName(String name);
+    // la búsqueda que se hará en el front será mediante un desplegable con los nombres exactos
+    List<Province> findByAutonomousCommunityNameIgnoreCase(String name);
 
     /**
      * Busca una provincia por su nombre.

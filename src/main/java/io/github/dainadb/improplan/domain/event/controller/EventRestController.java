@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.dainadb.improplan.common.response.ApiResponse;
+import io.github.dainadb.improplan.domain.auth.service.IAuthService;
 import io.github.dainadb.improplan.domain.event.dto.EventRequestDto;
 import io.github.dainadb.improplan.domain.event.dto.EventResponseDto;
 import io.github.dainadb.improplan.domain.event.entity.Event.StatusType;
 import io.github.dainadb.improplan.domain.event.service.IEventService;
 import io.github.dainadb.improplan.domain.generic.controller.GenericRestController;
+import io.github.dainadb.improplan.domain.user.dto.UserResponseDto;
+
 
 
 /**
@@ -40,6 +44,8 @@ public class EventRestController extends GenericRestController {
     @Autowired
     private IEventService eventService;
 
+    @Autowired
+    private IAuthService authService;
 
     /**
      * Crea un nuevo evento.
@@ -48,9 +54,9 @@ public class EventRestController extends GenericRestController {
      * @return ResponseEntity con el evento creado.
      */
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<EventResponseDto>> createEvent(@RequestBody EventRequestDto eventRequestDto) {
-        String userEmail = getEmail();
-        EventResponseDto createdEvent = eventService.createEvent(eventRequestDto, userEmail);
+    public ResponseEntity<ApiResponse<EventResponseDto>> createEvent(@RequestBody EventRequestDto eventRequestDto, Authentication authentication) {
+        String email = authentication.getName();
+        EventResponseDto createdEvent = eventService.createEvent(eventRequestDto, email);
         return created(createdEvent, "Evento creado exitosamente y pendiente de revisión.");
     }
 
@@ -208,9 +214,11 @@ public class EventRestController extends GenericRestController {
      */
     //El atributo inTime se usará en la interfaz para inhabilitar los eventos que ya hayan pasado.
     //El usuario verá en su lista de favoritos que los eventos que hayan caducado saldrán inhabilitados (sin fechas), no podrá acceder a ellos, solo eliminarlos de su lista.
-    @GetMapping("/favorites/user/{userId}")
-    public ResponseEntity<ApiResponse<List<EventResponseDto>>> getFavoriteEventsByUser(@PathVariable Long userId) {
-        List<EventResponseDto> favoriteEvents = eventService.findFavoriteEventsByUser(userId);
+    @GetMapping("/favorites/me")
+    public ResponseEntity<ApiResponse<List<EventResponseDto>>> getFavoriteEventsByUser( Authentication authentication) {
+         String email = authentication.getName();
+         UserResponseDto user = authService.getCurrentUser(email);
+        List<EventResponseDto> favoriteEvents = eventService.findFavoriteEventsByUser(user.getId());
         return success(favoriteEvents, "Eventos favoritos del usuario recuperados.");
     }
 
@@ -222,7 +230,7 @@ public class EventRestController extends GenericRestController {
      * @return Lista de eventos creados por ese usuario.
      */
     @GetMapping("/user/{email}")
-    public ResponseEntity<ApiResponse<List<EventResponseDto>>> getEventsByUserEmail(@PathVariable String email) {
+    public ResponseEntity<ApiResponse<List<EventResponseDto>>> getEventsByUserEmail(@PathVariable String email ) {
         List<EventResponseDto> events = eventService.findByUserEmail(email);
         return success(events, "Eventos encontrados para el usuario " + email);
     }

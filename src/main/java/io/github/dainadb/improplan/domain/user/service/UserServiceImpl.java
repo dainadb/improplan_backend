@@ -6,6 +6,9 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +26,7 @@ import io.github.dainadb.improplan.exception.NotFoundException;
  */
 //Tiene una lógica de negocio compleja que no encaja bien con el CRUD genérico, por eso no extiende de este.
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService , UserDetailsService{
 
     @Autowired
     private IUserRepository userRepository;
@@ -202,6 +205,18 @@ public class UserServiceImpl implements IUserService {
      */
     private UserResponseDto convertToResponseDto(User user) {
         return modelMapper.map(user, UserResponseDto.class);
+    }
+
+    /**
+     * Carga los detalles del usuario por su email para autenticación.
+     * @param email El email del usuario.   
+     * @return Los detalles del usuario.
+     * @throws UsernameNotFoundException Si el usuario no es encontrado.
+     */
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con el email: " + email));
     }
 
     

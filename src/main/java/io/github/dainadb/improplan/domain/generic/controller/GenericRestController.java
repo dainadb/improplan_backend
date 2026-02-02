@@ -13,7 +13,6 @@ import io.github.dainadb.improplan.common.response.ApiResponse;
 public abstract class GenericRestController {
 /**
      * Obtiene el email del usuario autenticado actual.
-     *
      * @return el email de usuario, o "Anónimo" si no hay autenticación activa.
      */
     protected String getEmail() {
@@ -22,6 +21,8 @@ public abstract class GenericRestController {
             //Si auth no es null se devuelve auth.getName(), si es null se devuelve "Anónimo"
         //auth.getName() devuelve el valor del método getUsername() de la entidad User, que es el email.
     }
+// Al final no he usado este método. Pendiente de revisión 
+
 
 
     /**

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,6 +33,7 @@ public class UserRestController extends GenericRestController {
 
     @Autowired
     private IUserService userService;
+    
 
 
     /**
@@ -125,25 +127,27 @@ public class UserRestController extends GenericRestController {
 
     /**
      * Actualiza el perfil de un usuario (nombre y apellidos).
-     * @param id ID del usuario a actualizar.
      * @param profileDto DTO con los nuevos datos del perfil.
      * @return ResponseEntity con el perfil del usuario actualizado.
      */
-    @PutMapping("/{id}/profile")
-    public ResponseEntity<ApiResponse<UserResponseDto>> updateProfile(@PathVariable Long id, @RequestBody UserProfileRequestDto profileDto) {
-        UserResponseDto updatedUser = userService.updateProfile(id, profileDto);
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse<UserResponseDto>> updateProfile( @RequestBody UserProfileRequestDto profileDto, Authentication authentication) {
+        String email = authentication.getName();
+        UserResponseDto user = userService.findByEmail(email);
+        UserResponseDto updatedUser = userService.updateProfile(user.getId(), profileDto);
         return success(updatedUser, "Perfil actualizado correctamente.");
     }
 
     /**
      * Cambia la contraseña de un usuario.
-     * @param id ID del usuario cuya contraseña se cambiará.
      * @param passwordDto DTO con la nueva contraseña y su confirmación.
      * @return ResponseEntity sin contenido y estado 200 (OK).
      */
-    @PutMapping("/{id}/change-password")
-    public ResponseEntity<ApiResponse<Void>> changePassword(@PathVariable Long id, @RequestBody UserChangePasswordDto passwordDto) {
-        userService.changePassword(id, passwordDto);
+    @PutMapping("/change-password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(@RequestBody UserChangePasswordDto passwordDto, Authentication authentication) {
+        String email = authentication.getName();
+        UserResponseDto user = userService.findByEmail(email);
+        userService.changePassword(user.getId(), passwordDto);
         return success(null, "Contraseña actualizada con éxito.");
     }
 }
