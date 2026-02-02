@@ -1,6 +1,7 @@
 package io.github.dainadb.improplan.domain.province.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import io.github.dainadb.improplan.domain.autonomouscommunity.entity.AutonomousCommunity;
 import jakarta.persistence.Column;
@@ -49,12 +50,12 @@ public class Province implements Serializable {
     /**
      * Latitud de la provincia.
      */
-    private Double latitude;
+    private BigDecimal latitude;
 
     /**
      * Longitud de la provincia.
      */
-    private Double longitude;
+    private BigDecimal longitude;
 
     /**
      * La comunidad autónoma a la que pertenece esta provincia.

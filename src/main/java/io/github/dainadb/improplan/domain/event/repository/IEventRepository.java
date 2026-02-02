@@ -1,11 +1,10 @@
 package io.github.dainadb.improplan.domain.event.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -82,7 +81,7 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     * @param maxPrice Precio máximo
     * @return Lista de eventos que tienen un precio igual o inferior al especificado.
     */
-    List<Event> findByPriceLessThanEqual (Double maxPrice);
+    List<Event> findByPriceLessThanEqual (BigDecimal maxPrice);
 
     /**
      * Busca eventos por el nombre del municipio.
@@ -96,7 +95,7 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
      * @param name Nombre de la provincia.
      * @return Lista de eventos que pertenecen a la provincia con el nombre dado.
      */
-    List<Event> findByProvinceNameIgnoreCase(String name);
+    List<Event> findByMunicipalityProvinceNameIgnoreCase(String name);
 
 
     /**
@@ -159,8 +158,11 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
                 @Param("eventDate") LocalDate eventDate,
                 @Param("themeName") String themeName,
                 @Param("municipalityName") String municipalityName,
-                @Param("maxPrice") Double maxPrice
+                @Param("maxPrice") BigDecimal maxPrice
         );
+
+
+
 
 
 
@@ -175,9 +177,9 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
      * @param pageable Un objeto que contiene la información de paginación (número de página, tamaño y ordenación).
      * @return Una 'página' (Page) de eventos favoritos de ese usuario.
      */
-    @Query("SELECT f.event FROM Favorite f WHERE f.user.id = :userId")
+   /*  @Query("SELECT f.event FROM Favorite f WHERE f.user.id = :userId")
     Page<Event> findFavoriteEventsByUserId(@Param("userId") Long userId, Pageable pageable);
-
+    */
 
 
     //Para poder paginar los resultados de las búsquedas se devolverá un Page<Event> en lugar de List<Event>(una página de eventos).
@@ -188,10 +190,10 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     //Page<Event> findAll (Pageable pageable); //No sería necesario definir este método, ya que JpaRepository ya lo proporciona.
 
     //En esta opción además de pasar por parámetro el objeto Pageable, se pasa el estado para filtrar los eventos por su estado.
-    Page<Event> findByStatus (Pageable pageable, StatusType status);
+    //Page<Event> findByStatus (Pageable pageable, StatusType status);
 
     //En esta opción además de pasar por parámetro el objeto Pageable, se pasa el estado para filtrar los eventos por su estado y si están vigentes
-    Page<Event> findByInTimeAndStatus(Pageable pageable, Boolean inTime, StatusType status);
+    //Page<Event> findByInTimeAndStatus(Pageable pageable, Boolean inTime, StatusType status);
 
 
 
@@ -214,7 +216,7 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     //En esta consulta se pueden ver filtros fijos, ejemplo: e.status = 'PUBLISHED' (por estado publicado)o 
     // opcionales, ejemplo: (:themeName IS NULL OR e.theme.name = :themeName) --> aquí se indica que si el parámetro :themeName es null, automáticamente la condición será true y por lo tanto no se filtrará por temática (eso es así porque el usuario ha decidido no filtrar por temática)
     //En cambio, por como se quiere diseñar el front, tanto: comunidad, provincia como fecha, serán filtros fijos, ya que el usuario siempre tendrá que indicarlos antes de que se le muestren los eventos publicados.
-    @Query("""
+   /* @Query("""
         SELECT e FROM Event e
           JOIN e.municipality m
           JOIN m.province p
@@ -237,5 +239,6 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
             @Param("maxPrice") Double maxPrice,
             Pageable pageable
     );
+    */
 
 }

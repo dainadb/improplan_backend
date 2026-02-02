@@ -1,12 +1,12 @@
 package io.github.dainadb.improplan.domain.event.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
 import io.github.dainadb.improplan.domain.event.dto.EventRequestDto;
 import io.github.dainadb.improplan.domain.event.dto.EventResponseDto;
-import io.github.dainadb.improplan.domain.event.entity.Event.StatusType;
 import io.github.dainadb.improplan.exception.NotFoundException;
 
 
@@ -112,7 +112,7 @@ public interface IEventService {
      * Busca eventos por su precio máximo.
      * @param maxPrice Precio máximo.
      */
-    List<EventResponseDto> findByMaxPrice(Double maxPrice);
+    List<EventResponseDto> findByMaxPrice(BigDecimal maxPrice);
 
     /**
      * Busca eventos por una fecha específica.
@@ -184,7 +184,7 @@ public interface IEventService {
                                         LocalDate eventDate,
                                         String themeName,
                                         String municipalityName,
-                                        Double maxPrice
+                                        BigDecimal maxPrice
                                         );
 
    

@@ -1,6 +1,7 @@
 package io.github.dainadb.improplan.domain.event.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,12 +69,11 @@ public class Event implements Serializable {
 
     @Builder.Default
     @Column(precision = 10, scale = 8)
-    private Double latitude = 0.0; //Se establece un valor por defecto porque cuando el usuario (role user) crea el evento, no introduce latitud ni longitud.
+    private BigDecimal latitude = BigDecimal.ZERO; //Se establece un valor por defecto porque cuando el usuario (role user) crea el evento, no introduce latitud ni longitud.
 
     @Builder.Default
     @Column(precision = 11, scale = 8)
-    private Double longitude = 0.0; //Se establece un valor por defecto porque cuando el usuario (role user) crea el evento, no introduce latitud ni longitud.
-
+    private BigDecimal longitude = BigDecimal.ZERO; //Se establece un valor por defecto porque cuando el usuario (role user) crea el evento, no introduce latitud ni longitud.
     @Column(length = 255)
     private String image;
 
@@ -85,7 +85,7 @@ public class Event implements Serializable {
     private Boolean isFree;
 
     @Column(precision = 10, scale = 2)
-    private Double price;
+    private BigDecimal price;
 
     @Builder.Default
     @Column(name = "in_time", nullable = false)
