@@ -1,5 +1,6 @@
 package io.github.dainadb.improplan.domain.event.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -192,7 +193,7 @@ public class EventRestController extends GenericRestController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate eventDate,
             @RequestParam(required = false) String themeName,
             @RequestParam(required = false) String municipalityName,
-            @RequestParam(required = false) Double maxPrice) {
+            @RequestParam(required = false) BigDecimal maxPrice) {
         
         List<EventResponseDto> events = eventService.searchPublishedEvents(provinceName, eventDate, themeName, municipalityName, maxPrice);
         return success(events, "Resultados de la búsqueda de eventos.");

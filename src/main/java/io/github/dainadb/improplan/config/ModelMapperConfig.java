@@ -63,6 +63,15 @@ public class ModelMapperConfig {
 
                });
 
+
+        /**
+         *  Método conversor de Enum a String
+         */
+            // Necesario porque el ModelMapper no ejecuta código y no es capaz de entender el método name()
+            //Por eso es necesario el conversor, porque este sí ejecuta el código Java normal, obtiene el String del Enum de forma segura y se lo devuelve a ModelMapper
+            Converter<Enum<?>, String> enumToStringConverter = ctx -> ctx.getSource() == null ? null : ctx.getSource().name(); // Si la fuente es null, devuelve null; si no, devuelve el nombre del enum (string).
+
+
         /**
          * Mapeo personalizado de Favorite a FavoriteResponseDto
          */
@@ -77,7 +86,7 @@ public class ModelMapperConfig {
                         map().setEventThemeName(source.getEvent().getTheme().getName());
                         map().setEventMunicipalityName(source.getEvent().getMunicipality().getName());
                         map().setEventInTime(source.getEvent().getInTime());
-                        map().setEventStatus(source.getEvent().getStatus().name());
+                        using(enumToStringConverter).map(source.getEvent().getStatus(), destination.getEventStatus());
                         map().setUserEmail(source.getUser().getEmail());
 
                     }

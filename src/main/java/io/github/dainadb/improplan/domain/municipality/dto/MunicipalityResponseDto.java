@@ -1,5 +1,7 @@
 package io.github.dainadb.improplan.domain.municipality.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +18,7 @@ public class MunicipalityResponseDto {
 
     private Integer id;
     private String name;
-    private Double latitude;
-    private Double longitude;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
     private String provinceName;
 }

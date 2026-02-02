@@ -64,11 +64,11 @@ public class SpringSecurityConfig {
                 //  Endpoints para Administradores (hasRole("ROLE_ADMIN")) 
 
                 // Gestión de eventos
-                .requestMatchers(HttpMethod.PUT, "/api/events/update/{id}").hasRole("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/events/update/{id}").hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/events/harddelete/{id}",
                                                     "/api/events/softdelete/{id}"
-                                                    ).hasRole("ROLE_ADMIN")
-                .requestMatchers(HttpMethod.PATCH, "/api/events/publish/{id}").hasRole("ROLE_ADMIN")
+                                                    ).hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/events/publish/{id}").hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.GET, 
                     "/api/events/intime/status",
                     "/api/events/discarded", 
@@ -76,11 +76,10 @@ public class SpringSecurityConfig {
                     "/api/events/count/**",
                     "/api/events/user/{email}"
 
-                ).hasRole("ROLE_ADMIN")
+                ).hasAuthority("ROLE_ADMIN")
                 // Gestión de usuarios.
-                .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ROLE_ADMIN")
-                .requestMatchers(HttpMethod.PATCH, "/api/users/**").hasRole("ROLE_ADMIN")
-
+                .requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/users/**").hasAuthority("ROLE_ADMIN")
 
                 //  Endpoints para Usuarios Autenticados (authenticated) 
 

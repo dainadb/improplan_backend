@@ -1,6 +1,7 @@
 package io.github.dainadb.improplan.domain.municipality.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import io.github.dainadb.improplan.domain.province.entity.Province;
 import jakarta.persistence.Column;
@@ -50,12 +51,12 @@ public class Municipality implements Serializable {
     /**
      * Latitud del municipio.
      */
-    private Double latitude;
+    private BigDecimal latitude;
 
     /**
      * Longitud del municipio.
      */
-    private Double longitude;
+    private BigDecimal longitude;
 
     /**
      * La provincia a la que pertenece este municipio.

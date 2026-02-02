@@ -2,6 +2,7 @@ package io.github.dainadb.improplan.domain.autonomouscommunity.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 
 import io.github.dainadb.improplan.domain.autonomouscommunity.dto.AutCommunityRequestDto;
 import io.github.dainadb.improplan.domain.autonomouscommunity.dto.AutCommunityResponseDto;
@@ -9,6 +10,7 @@ import io.github.dainadb.improplan.domain.autonomouscommunity.entity.AutonomousC
 import io.github.dainadb.improplan.domain.autonomouscommunity.repository.IAutonomousCommunityRepository;
 import io.github.dainadb.improplan.domain.generic.service.GenericCrudDtoServiceImpl;
 
+@Service
 public class AutonomousCommunityServiceImpl extends GenericCrudDtoServiceImpl<AutonomousCommunity, AutCommunityRequestDto, AutCommunityResponseDto, Integer> implements IAutonomousCommunityService {
 
     @Autowired

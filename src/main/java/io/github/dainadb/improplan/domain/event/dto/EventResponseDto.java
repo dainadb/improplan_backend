@@ -1,5 +1,6 @@
 package io.github.dainadb.improplan.domain.event.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -23,12 +24,12 @@ public class EventResponseDto {
     private String description;
     private String placeName;
     private String address;
-    private Double latitude;
-    private Double longitude;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
     private String image;
     private String infoUrl;
     private Boolean isFree;
-    private Double price;
+    private BigDecimal price;
     private Boolean inTime; 
     private Event.StatusType status;
     private String municipalityName;

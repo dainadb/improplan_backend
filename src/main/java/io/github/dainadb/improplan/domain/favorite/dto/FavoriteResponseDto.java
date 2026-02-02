@@ -1,5 +1,6 @@
 package io.github.dainadb.improplan.domain.favorite.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class FavoriteResponseDto {
     private Long eventId;
     private String eventName;
     private String eventImage;
-    private Double eventPrice;
+    private BigDecimal eventPrice;
     private String eventThemeName;
     private String eventMunicipalityName;
     private Boolean eventInTime;

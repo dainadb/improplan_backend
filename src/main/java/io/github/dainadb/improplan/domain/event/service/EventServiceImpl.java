@@ -1,5 +1,6 @@
 package io.github.dainadb.improplan.domain.event.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -235,7 +236,7 @@ public class EventServiceImpl  implements IEventService {
      */
     @Override
     public List<EventResponseDto> findByProvinceName(String name) {
-        return eventRepository.findByProvinceNameIgnoreCase(name).stream()
+        return eventRepository.findByMunicipalityProvinceNameIgnoreCase(name).stream()
                 .map(this::convertToResponseDto)
                 .toList();
     }
@@ -265,7 +266,7 @@ public class EventServiceImpl  implements IEventService {
      * {@inheritDoc}
      */
     @Override
-    public List<EventResponseDto> findByMaxPrice(Double maxPrice) {
+    public List<EventResponseDto> findByMaxPrice(BigDecimal maxPrice) {
         return eventRepository.findByPriceLessThanEqual(maxPrice).stream()
                 .map(this::convertToResponseDto)
                 .toList();
@@ -393,7 +394,7 @@ public class EventServiceImpl  implements IEventService {
     //Solo se mostrarán los eventos que estén publicados y vigentes y que cumplan los filtros
     @Override
     public List<EventResponseDto> searchPublishedEvents( String provinceName, LocalDate eventDate,
-            String themeName, String municipalityName, Double maxPrice) {
+            String themeName, String municipalityName, BigDecimal maxPrice) {
             List<Event> events = eventRepository.searchPublishedEvents(provinceName.toLowerCase(),eventDate,
                                                     themeName != null ? themeName.toLowerCase() : null, //Indicamos que si no es null, se pase en minúsculas y si es null, se pase como null
                                                     municipalityName != null ? municipalityName.toLowerCase() : null,
@@ -413,8 +414,8 @@ public class EventServiceImpl  implements IEventService {
       * @throws ValidationException si algún dato no es válido.
       */
     private void validateEventRequest(EventRequestDto dto) {
-        if (Boolean.TRUE.equals(dto.getIsFree()) && dto.getPrice() != null && dto.getPrice() > 0) {
-            throw new ValidationException("Un evento gratuito no puede tener precio.");
+        if (Boolean.TRUE.equals(dto.getIsFree()) && dto.getPrice().compareTo(BigDecimal.ZERO) > 0) { //Si la comparación entre dto.getPrice y compareTo(BigDecimal.ZERO) es mayor a 0, significa que dto.getPrice es mayor que 0.
+            throw new ValidationException("Un evento gratuito no puede tener un precio mayor a cero.");
         }
         if (dto.getInfoUrl() != null && !dto.getInfoUrl().isEmpty() && !Validator.isValidUrl(dto.getInfoUrl())) {
             throw new ValidationException("La URL de información no es válida.");
