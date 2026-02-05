@@ -95,7 +95,7 @@ public class User implements Serializable, UserDetails {
     @Builder.Default //Para que no ignore el valor por defecto al usar el builder de Lombok
     @ManyToMany(fetch = FetchType.EAGER) //EAGER para cargar los roles junto con el usuario y así tener los permisos disponibles al autenticar.
     @JoinTable(
-        name= "user_roles",
+        name= "users_roles",
         joinColumns = @JoinColumn(name = "id_user"),
         inverseJoinColumns = @JoinColumn(name = "id_role")
     )

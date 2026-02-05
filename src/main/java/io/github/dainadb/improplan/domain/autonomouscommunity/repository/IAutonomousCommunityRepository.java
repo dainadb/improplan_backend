@@ -19,6 +19,6 @@ public interface IAutonomousCommunityRepository extends JpaRepository<Autonomous
      * @return Comunidad autónoma que coincide con el nombre.
      */
     
-    Optional<AutonomousCommunity> findByNameIgnoreCase(String name);
+    Optional<AutonomousCommunity> findByNameContainingIgnoreCase(String name);
     
 }

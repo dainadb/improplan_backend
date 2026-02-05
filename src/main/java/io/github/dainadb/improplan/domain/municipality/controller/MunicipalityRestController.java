@@ -67,7 +67,7 @@ public class MunicipalityRestController extends GenericRestController {
    
     @GetMapping("/by-province")
     public ResponseEntity<ApiResponse<List<MunicipalityResponseDto>>> getMunicipalitiesByProvince(@RequestParam String provinceName) {
-        List<MunicipalityResponseDto> municipalities = municipalityService.findByProvinceName(provinceName);
+        List<MunicipalityResponseDto> municipalities = municipalityService.findByProvinceName(provinceName.trim());
         return success(municipalities, "Municipios de la provincia '" + provinceName + "' obtenidos con éxito.");
     }
 }

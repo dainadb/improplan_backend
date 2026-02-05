@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import io.github.dainadb.improplan.common.utils.Validator;
 import io.github.dainadb.improplan.domain.auth.dto.LoginRequesttDto;
@@ -119,6 +120,9 @@ public class AuthServiceImpl implements IAuthService {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new ConflictException("El email ya está en uso: " + dto.getEmail());
         }
+         if (!StringUtils.hasText(dto.getPassword())) {
+        throw new BadRequestException("La contraseña no puede ser nula o estar vacía.");
+    }
     }
 
     /**

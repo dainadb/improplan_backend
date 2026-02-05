@@ -56,7 +56,7 @@ public class ThemeRestController extends GenericRestController {
      */
     @GetMapping("/by-name")
     public ResponseEntity<ApiResponse<ThemeResponseDto>> getThemeByName(@RequestParam String name) {
-        ThemeResponseDto theme = themeService.findByName(name);
+        ThemeResponseDto theme = themeService.findByName(name.trim());
         return success(theme, "Temática encontrada con éxito.");
     }
 

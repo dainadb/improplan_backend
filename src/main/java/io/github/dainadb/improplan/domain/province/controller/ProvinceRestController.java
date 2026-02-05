@@ -32,7 +32,7 @@ public class ProvinceRestController extends GenericRestController {
     @GetMapping("/by-community")
     public ResponseEntity<ApiResponse<List<ProvinceResponseDto>>> getProvincesByCommunity(@RequestParam String communityName) {
         
-        List<ProvinceResponseDto> provinces = provinceService.findByAutonomousCommunityName(communityName);
+        List<ProvinceResponseDto> provinces = provinceService.findByAutonomousCommunityName(communityName.trim());
         
         return success(provinces, "Lista de provincias obtenida con éxito.");
     }
@@ -48,7 +48,7 @@ public class ProvinceRestController extends GenericRestController {
     @GetMapping("/by-name")
     public ResponseEntity<ApiResponse<ProvinceResponseDto>> getProvinceByName( @RequestParam String name) {
         
-        ProvinceResponseDto province = provinceService.findByName(name);
+        ProvinceResponseDto province = provinceService.findByName(name.trim());
         return success(province, "Provincia encontrada con éxito.");
     }
 }

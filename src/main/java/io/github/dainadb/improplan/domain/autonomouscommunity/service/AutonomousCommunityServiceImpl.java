@@ -9,6 +9,7 @@ import io.github.dainadb.improplan.domain.autonomouscommunity.dto.AutCommunityRe
 import io.github.dainadb.improplan.domain.autonomouscommunity.entity.AutonomousCommunity;
 import io.github.dainadb.improplan.domain.autonomouscommunity.repository.IAutonomousCommunityRepository;
 import io.github.dainadb.improplan.domain.generic.service.GenericCrudDtoServiceImpl;
+import io.github.dainadb.improplan.exception.NotFoundException;
 
 @Service
 public class AutonomousCommunityServiceImpl extends GenericCrudDtoServiceImpl<AutonomousCommunity, AutCommunityRequestDto, AutCommunityResponseDto, Integer> implements IAutonomousCommunityService {
@@ -47,8 +48,8 @@ public class AutonomousCommunityServiceImpl extends GenericCrudDtoServiceImpl<Au
        */
     @Override
     public AutCommunityResponseDto findByName(String name) {
-        AutonomousCommunity autCommunityOpt = autCommunityRepository.findByNameIgnoreCase(name)
-                .orElseThrow(() -> new RuntimeException("Comunidad autónoma no encontrada con el nombre: " + name));
+        AutonomousCommunity autCommunityOpt = autCommunityRepository.findByNameContainingIgnoreCase(name)
+                .orElseThrow(() -> new NotFoundException("Comunidad autónoma no encontrada con el nombre: " + name));
 
         return convertToResponseDto(autCommunityOpt); // Reutiliza el conversor heredado
     }

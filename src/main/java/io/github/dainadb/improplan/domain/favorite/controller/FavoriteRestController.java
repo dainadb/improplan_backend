@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +38,8 @@ public class FavoriteRestController extends GenericRestController {
      * @return Respuesta con los detalles del evento añadido.
      */
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse<FavoriteResponseDto>> addFavorite(@RequestBody FavoriteRequestDto favoriteRequestDto) {
-        String userEmail = getEmail(); // Obtiene el email del usuario autenticado
+    public ResponseEntity<ApiResponse<FavoriteResponseDto>> addFavorite(@RequestBody FavoriteRequestDto favoriteRequestDto, Authentication authentication) {
+        String userEmail = authentication.getName(); // Obtiene el email del usuario autenticado
         FavoriteResponseDto newFavorite = favoriteService.addFavorite(favoriteRequestDto, userEmail);
         return created(newFavorite, "Evento añadido a favoritos con éxito.");
     }
@@ -49,8 +50,8 @@ public class FavoriteRestController extends GenericRestController {
      * @return Respuesta indicando el éxito de la operación.
      */
     @DeleteMapping("/delete/{eventId}")
-    public ResponseEntity<ApiResponse<Void>> removeFavorite(@PathVariable Long eventId) {
-        String userEmail = getEmail(); 
+    public ResponseEntity<ApiResponse<Void>> removeFavorite(@PathVariable Long eventId, Authentication authentication) {
+        String userEmail = authentication.getName(); 
         favoriteService.removeFavorite(eventId, userEmail);
         return success(null, "Evento eliminado de favoritos con éxito.");
     }
@@ -60,8 +61,8 @@ public class FavoriteRestController extends GenericRestController {
      * @return Respuesta con la lista de eventos favoritos.
      */
     @GetMapping("/my-favorites")
-    public ResponseEntity<ApiResponse<List<FavoriteResponseDto>>> getMyFavorites() {
-        String userEmail = getEmail();
+    public ResponseEntity<ApiResponse<List<FavoriteResponseDto>>> getMyFavorites(Authentication authentication) {
+        String userEmail = authentication.getName();
         List<FavoriteResponseDto> favorites = favoriteService.getFavoritesByUser(userEmail);
         return success(favorites, "Lista de favoritos obtenida con éxito.");
     }
