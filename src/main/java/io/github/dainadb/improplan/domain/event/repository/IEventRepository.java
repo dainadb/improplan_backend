@@ -122,16 +122,21 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     List<Event> findByUserEmail (String email);
 
 
-    /**
+
+
+    /** Se elimina porque se centraliza la lógica de favoritos en el FavoriteService
      * Busca la lista de eventos publicados que un usuario ha marcado como favoritos.
      * @param userId El ID del usuario.
      * @return Una lista de los eventos favoritos de ese usuario.
      */
     // Se usa una consulta JPQL para unir la entidad Favorite con Event y filtrar por el ID del usuario.
-    @Query("SELECT f.event FROM Favorite f WHERE f.user.id = :userId AND f.event.status = 'PUBLISHED'")
-    List<Event> findFavoriteEventsByUserId(@Param("userId") Long userId);
+    // @Query("SELECT f.event FROM Favorite f WHERE f.user.id = :userId AND f.event.status = 'PUBLISHED'")
+    // List<Event> findFavoriteEventsByUserId(@Param("userId") Long userId);
 
-  /**
+  
+  
+  
+    /**
    * Búsqueda avanzada de eventos publicados y vigentes con filtros dinámicos. 
    * @param provinceName  Nombre de la provincia. Filtro obligatorio.
    * @param eventDate Fecha del evento. Filtro obligatorio.

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.dainadb.improplan.common.response.ApiResponse;
-import io.github.dainadb.improplan.domain.auth.dto.LoginRequesttDto;
+import io.github.dainadb.improplan.domain.auth.dto.LoginRequestDto;
 import io.github.dainadb.improplan.domain.auth.dto.LoginResponseDto;
 import io.github.dainadb.improplan.domain.auth.dto.RegisterUserDto;
 import io.github.dainadb.improplan.domain.auth.service.IAuthService;
@@ -35,7 +35,7 @@ public class AuthRestController extends GenericRestController {
      */
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginRequesttDto loginDto) {
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginRequestDto loginDto) {
         LoginResponseDto response = authService.authenticateUser(loginDto);
 
         //Se crea un objeto de autenticación con los 3 parámetros: principal (email), credentials (null porque ya se ha autenticado) y authorities (roles)

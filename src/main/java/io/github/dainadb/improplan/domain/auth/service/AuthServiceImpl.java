@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import io.github.dainadb.improplan.common.utils.Validator;
-import io.github.dainadb.improplan.domain.auth.dto.LoginRequesttDto;
+import io.github.dainadb.improplan.domain.auth.dto.LoginRequestDto;
 import io.github.dainadb.improplan.domain.auth.dto.LoginResponseDto;
 import io.github.dainadb.improplan.domain.auth.dto.RegisterUserDto;
 import io.github.dainadb.improplan.domain.role.entity.Role;
@@ -51,7 +51,7 @@ public class AuthServiceImpl implements IAuthService {
      * {@inheritDoc}
      */
     @Override
-    public LoginResponseDto authenticateUser(LoginRequesttDto loginRequest) {
+    public LoginResponseDto authenticateUser(LoginRequestDto loginRequest) {
         if(!Validator.isValidEmail(loginRequest.getEmail())){
             throw new BadRequestException("El email no tiene un formato válido: " + loginRequest.getEmail());
         }

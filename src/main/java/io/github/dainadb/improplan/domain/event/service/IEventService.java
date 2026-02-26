@@ -165,12 +165,18 @@ public interface IEventService {
     List<EventResponseDto> findByUserEmail (String email);
 
   
-    /**
+
+
+    /** Se elimina porque se centraliza la lógica de favoritos en el FavoriteService
+     * {@inheritDoc}
     * Obtiene los eventos publicados (estado PUBLISHED) favoritos de un usuario específico.
     * @param userId ID del usuario.
     */
-    List<EventResponseDto> findFavoriteEventsByUser(Long userId);
+    // List<EventResponseDto> findFavoriteEventsByUser(Long userId);
 
+
+
+    
     /**
      * Busca eventos publicados que coincidan con los criterios de búsqueda proporcionados. 
      * @param provinceName Nombre de la provincia. (obligatorio)
