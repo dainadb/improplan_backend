@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.github.dainadb.improplan.domain.auth.dto.LoginResponseDto;
+import io.github.dainadb.improplan.domain.auth.dto.RegisterUserDto;
 import io.github.dainadb.improplan.domain.event.dto.EventRequestDto;
 import io.github.dainadb.improplan.domain.event.dto.EventResponseDto;
 import io.github.dainadb.improplan.domain.event.entity.Event;
@@ -22,7 +23,6 @@ import io.github.dainadb.improplan.domain.municipality.entity.Municipality;
 import io.github.dainadb.improplan.domain.province.dto.ProvinceResponseDto;
 import io.github.dainadb.improplan.domain.province.entity.Province;
 import io.github.dainadb.improplan.domain.role.entity.Role;
-import io.github.dainadb.improplan.domain.user.dto.UserRequestDto;
 import io.github.dainadb.improplan.domain.user.dto.UserResponseDto;
 import io.github.dainadb.improplan.domain.user.entity.User;
 
@@ -175,12 +175,12 @@ public class ModelMapperConfig {
         
 
          /**
-         * Mapeo personalizado de UserRequestDto a User.
+         * Mapeo personalizado de RegisterUserDto a User.
          * Se ignoran los campos que requieren lógica de negocio específica en el servicio,
          * como la codificación de la contraseña y la asignación de roles.
          */
-        modelMapper.typeMap(UserRequestDto.class, User.class)
-                .addMappings(new PropertyMap<UserRequestDto, User>() {
+        modelMapper.typeMap(RegisterUserDto.class, User.class)
+                .addMappings(new PropertyMap<RegisterUserDto, User>() {
                     @Override
                     protected void configure() {
                         skip(destination.getRoles());

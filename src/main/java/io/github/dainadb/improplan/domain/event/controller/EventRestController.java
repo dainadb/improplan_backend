@@ -27,7 +27,6 @@ import io.github.dainadb.improplan.domain.event.dto.EventResponseDto;
 import io.github.dainadb.improplan.domain.event.entity.Event.StatusType;
 import io.github.dainadb.improplan.domain.event.service.IEventService;
 import io.github.dainadb.improplan.domain.generic.controller.GenericRestController;
-import io.github.dainadb.improplan.domain.user.dto.UserResponseDto;
 
 
 
@@ -206,7 +205,10 @@ public class EventRestController extends GenericRestController {
     }
 
 
-    /**
+
+
+
+    /** Se elimina porque se centraliza la lógica de favoritos en el FavoriteService
      * Obtiene los eventos publicados (estado PUBLISHED) favoritos de un usuario.
      *
      * @param userId ID del usuario.
@@ -214,16 +216,20 @@ public class EventRestController extends GenericRestController {
      */
     //El atributo inTime se usará en la interfaz para inhabilitar los eventos que ya hayan pasado.
     //El usuario verá en su lista de favoritos que los eventos que hayan caducado saldrán inhabilitados (sin fechas), no podrá acceder a ellos, solo eliminarlos de su lista.
-    @GetMapping("/favorites/me")
-    public ResponseEntity<ApiResponse<List<EventResponseDto>>> getFavoriteEventsByUser( Authentication authentication) {
-         String email = authentication.getName();
-         UserResponseDto user = authService.getCurrentUser(email);
-        List<EventResponseDto> favoriteEvents = eventService.findFavoriteEventsByUser(user.getId());
-        return success(favoriteEvents, "Eventos favoritos del usuario recuperados.");
-    }
+    // @GetMapping("/favorites/me")
+    // public ResponseEntity<ApiResponse<List<EventResponseDto>>> getFavoriteEventsByUser( Authentication authentication) {
+    //      String email = authentication.getName();
+    //      UserResponseDto user = authService.getCurrentUser(email);
+    //     List<EventResponseDto> favoriteEvents = eventService.findFavoriteEventsByUser(user.getId());
+    //     return success(favoriteEvents, "Eventos favoritos del usuario recuperados.");
+    // }
 
     
-        /**
+
+
+
+
+    /**
      * Busca eventos por el email del usuario creador.
      *
      * @param email Email del usuario.

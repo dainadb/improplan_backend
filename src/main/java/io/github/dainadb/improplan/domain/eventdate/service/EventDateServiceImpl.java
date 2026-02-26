@@ -10,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ch.qos.logback.core.model.Model;
 import io.github.dainadb.improplan.domain.eventdate.dto.EventDateResponseDto;
 import io.github.dainadb.improplan.domain.eventdate.entity.EventDate;
 import io.github.dainadb.improplan.domain.eventdate.repository.IEventDateRepository;

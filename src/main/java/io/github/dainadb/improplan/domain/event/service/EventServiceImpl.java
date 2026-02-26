@@ -378,15 +378,19 @@ public class EventServiceImpl  implements IEventService {
                 .toList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<EventResponseDto> findFavoriteEventsByUser(Long userId) {
-        return eventRepository.findFavoriteEventsByUserId(userId).stream()
-                .map(this::convertToResponseDto)
-                .toList();
-    }
+
+    
+    // /** SE elimina porque se centraliza la lógica de favoritos en el FavoriteService
+    //  * {@inheritDoc}
+    //  */
+    // @Override
+    // public List<EventResponseDto> findFavoriteEventsByUser(Long userId) {
+    //     return eventRepository.findFavoriteEventsByUserId(userId).stream()
+    //             .map(this::convertToResponseDto)
+    //             .toList();
+    // }
+
+
 
     /**
      * {@inheritDoc}
